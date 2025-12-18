@@ -9,10 +9,10 @@ class Warehouse extends Model
     //
      protected $fillable = ['name', 'location'];
     // in second realation
-    /*public function operations()
+    public function operations()
     {
         return $this->hasMany(Operation::class);
-    }*/
+    }
 
     public function stocks()
     {
