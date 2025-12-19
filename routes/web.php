@@ -3,6 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+use Illuminate\Support\Facades\Auth;
+
+
+// تسجيل الخروج 
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect()->route('Login');
+})->name('logout');
+
+
 Route::get('/Welcome', function () {
     return view('Welcome');
 });
@@ -11,7 +21,8 @@ Route::get('/Welcome', function () {
 // صفحة تسجيل الدخول
 Route::get('/login', function () {
     return view('Login');
-})->name('Login');
+})->name('login');
+
 
 // معالجة تسجيل الدخول
 Route::post('/login', [AuthController::class, 'login'])
@@ -19,8 +30,9 @@ Route::post('/login', [AuthController::class, 'login'])
 
 // الصفحة الرئيسية
 Route::get('/home', function () {
-    return view('home');
-})->name('home');
+    return view('Home');
+})->middleware('auth')->name('home');
+
 
 
 
