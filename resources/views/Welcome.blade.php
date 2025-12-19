@@ -76,7 +76,7 @@
         <span class="material-symbols-outlined text-primary">inventory_2</span>
         InventorySys
       </a>
-      <a href="{{route('Login')}}" class="btn btn-primary d-flex align-items-center gap-1">
+      <a href="{{route('login')}}" class="btn btn-primary d-flex align-items-center gap-1">
         Login <span class="material-symbols-outlined">login</span>
       </a>
 

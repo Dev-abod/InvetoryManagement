@@ -63,6 +63,7 @@
       <a class="nav-link  text-white" href="#"><span class="material-symbols-outlined me-2">bar_chart</span>Reports</a>
     </li>
   </ul>
+    
 
   <div class="border-top border-light pt-3 d-flex align-items-center gap-3">
     <img src="https://via.placeholder.com/40" class="rounded-circle" alt="User">
