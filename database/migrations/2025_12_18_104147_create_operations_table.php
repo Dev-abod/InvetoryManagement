@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('operations', function (Blueprint $table) {
 
     $table->id();
-    $table->string('operation_type');
+    $table->enum('operation_type', ['in', 'out', 'return_in', 'return_out', 'adjustment']);
     $table->string('number');
     $table->date('date');
     $table->string('status')->default('posted');
@@ -26,10 +26,12 @@ return new class extends Migration
 
     $table->timestamps();
 
-    $table->foreign('warehouse_id')->references('id')->on('warehouses');
-    $table->foreign('partner_id')->references('id')->on('partners');
-    $table->foreign('user_id')->references('id')->on('users');
-    $table->foreign('related_operation_id')->references('id')->on('operations');
+    $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('restrict');
+    $table->foreign('partner_id')->references('id')->on('partners')->onDelete('restrict');
+    $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+    $table->foreign('related_operation_id')->references('id')->on('operations')->onDelete('restrict');
+    $table->unique(['number', 'warehouse_id']);
+
         });
     }
 

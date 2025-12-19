@@ -21,9 +21,9 @@ return new class extends Migration
     $table->unsignedInteger('balance_after');
     $table->timestamps();
 
-    $table->foreign('operation_id')->references('id')->on('operations');
-    $table->foreign('warehouse_id')->references('id')->on('warehouses');
-    $table->foreign('item_id')->references('id')->on('items');
+    $table->foreign('operation_id')->references('id')->on('operations')->onDelete('restrict');
+    $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('restrict');
+    $table->foreign('item_id')->references('id')->on('items')->onDelete('restrict');
         });
     }
 

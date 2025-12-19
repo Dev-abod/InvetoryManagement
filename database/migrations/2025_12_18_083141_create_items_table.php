@@ -19,8 +19,8 @@ return new class extends Migration
     $table->unsignedBigInteger('unit_id');
     $table->timestamps();
 
-    $table->foreign('category_id')->references('id')->on('categories');
-    $table->foreign('unit_id')->references('id')->on('units');
+    $table->foreign('category_id')->references('id')->on('categories')->onDelete('restrict');
+    $table->foreign('unit_id')->references('id')->on('units')->onDelete('restrict');
         });
     }
 

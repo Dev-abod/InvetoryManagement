@@ -17,11 +17,14 @@ return new class extends Migration
     $table->unsignedBigInteger('operation_id');
     $table->unsignedBigInteger('item_id');
     $table->unsignedInteger('quantity');
+    $table->date('expiry_date')->nullable();
     $table->timestamps();
 
-    $table->foreign('operation_id')->references('id')->on('operations');
-    $table->foreign('item_id')->references('id')->on('items');
+    $table->foreign('operation_id')->references('id')->on('operations')->onDelete('restrict');
+    $table->foreign('item_id')->references('id')->on('items')->onDelete('restrict');
+    $table->unique(['operation_id', 'item_id', 'expiry_date']);
         });
+        
     }
 
     /**

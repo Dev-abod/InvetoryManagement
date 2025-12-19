@@ -18,9 +18,12 @@ return new class extends Migration
     $table->unsignedInteger('quantity')->default(0);
     $table->timestamps();
 
-    $table->foreign('warehouse_id')->references('id')->on('warehouses');
-    $table->foreign('item_id')->references('id')->on('items');
+    $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('restrict');
+    $table->foreign('item_id')->references('id')->on('items')->onDelete('restrict');
+    $table->unique(['warehouse_id', 'item_id']);
+
         });
+        
     }
 
     /**
