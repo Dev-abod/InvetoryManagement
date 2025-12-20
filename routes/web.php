@@ -76,17 +76,28 @@ Route::prefix('operations')
     ->middleware(['auth'])
     ->group(function () {
 
+        // إنشاء عملية
         Route::get('{type}/create', [OperationController::class, 'create'])
+            ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
             ->name('create');
 
+        // حفظ عملية
         Route::post('{type}', [OperationController::class, 'store'])
+            ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
             ->name('store');
 
+        // تصحيح عملية
         Route::post('{operation}/correct', [OperationController::class, 'correct'])
+            ->whereNumber('operation')
             ->name('correct');
 
+        // إلغاء عملية
         Route::post('{operation}/cancel', [OperationController::class, 'cancel'])
+            ->whereNumber('operation')
             ->name('cancel');
+
+             Route::get('items/popup', [OperationController::class, 'popupItems'])
+            ->name('items.popup');
+
     });
-    Route::get('items/popup', [OperationController::class, 'popupItems'])
-    ->name('items.popup');
+   

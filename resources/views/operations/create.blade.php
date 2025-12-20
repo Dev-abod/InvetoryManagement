@@ -355,7 +355,7 @@ function reindex() {
 
 /* ---------- تحميل الأصناف ---------- */
 function loadPopupItems() {
-  fetch(`{{ route('items.popup') }}`)
+  fetch(`{{ route('operations.items.popup') }}`)
     .then(response => response.json())
     .then(items => {
 
