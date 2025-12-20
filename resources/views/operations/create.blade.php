@@ -89,9 +89,12 @@ body{
               class="form-select form-select-sm"
               required>
         <option value="">---</option>
-        {{-- @foreach($partners as $partner) --}}
-        {{-- <option value="{{ $partner->id }}">{{ $partner->name }}</option> --}}
-        {{-- @endforeach --}}
+
+    @foreach($partners as $partner)
+        <option value="{{ $partner->id }}">
+            {{ $partner->name }}
+        </option>
+    @endforeach
       </select>
     </div>
 
@@ -101,10 +104,13 @@ body{
       <select name="warehouse_id"
               class="form-select form-select-sm"
               required>
-        {{-- @foreach($warehouses as $warehouse) --}}
-        {{-- <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option> --}}
-        {{-- @endforeach --}}
-        <option value="1">المخزن الرئيسي</option>
+       <option value="">---</option>
+
+    @foreach($warehouses as $warehouse)
+        <option value="{{ $warehouse->id }}">
+            {{ $warehouse->name }}
+        </option>
+    @endforeach
       </select>
     </div>
 
@@ -218,70 +224,175 @@ body{
 </form>
 </div>
 
-{{-- ================= Modal البحث (كما هو – Placeholder) ================= --}}
+<!-- ================= POPUP ITEMS ================= -->
 <div class="modal fade" id="itemSearchModal" tabindex="-1">
-<div class="modal-dialog modal-lg modal-dialog-centered">
-<div class="modal-content">
-<div class="modal-header">
-  <h5 class="modal-title">بحث عن صنف</h5>
-  <button class="btn-close" data-bs-dismiss="modal"></button>
-</div>
-<div class="modal-body">
-  <input class="form-control mb-3" placeholder="بحث بالاسم أو الباركود">
-  <p class="text-muted text-center">سيتم ربط البحث بالقاعدة لاحقًا</p>
-</div>
-</div>
-</div>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">اختيار صنف</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <table class="table table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>الباركود</th>
+              <th>الصنف</th>
+              <th>الفئة</th>
+              <th>الوحدة</th>
+              <th>اختيار</th>
+            </tr>
+          </thead>
+
+          <tbody id="popup-items-body">
+            <tr>
+              <td colspan="5" class="text-muted text-center">
+                جاري تحميل الأصناف...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
 </div>
 
-{{-- ================= JS ================= --}}
 <script>
 let activeRow = null;
 
-document.addEventListener('click', e => {
+document.addEventListener('click', function (e) {
 
-  if(e.target.closest('.open-item-modal')){
+  /* ---------- فتح popup ---------- */
+  if (e.target.closest('.open-item-modal')) {
     activeRow = e.target.closest('tr');
+    loadPopupItems();
   }
 
-  if(e.target.closest('.add-row')){
+  /* ---------- اختيار صنف (مع منع التكرار) ---------- */
+  if (e.target.classList.contains('select-item') && activeRow) {
+
+    const selectedItemId = e.target.dataset.id;
+
+    // 🔍 التحقق من التكرار
+    const exists = Array.from(
+      document.querySelectorAll('.item-id')
+    ).some(input =>
+      input.value === selectedItemId &&
+      input.closest('tr') !== activeRow
+    );
+
+    if (exists) {
+      alert('هذا الصنف مضاف بالفعل في العملية');
+      return;
+    }
+
+    // ✅ تعبئة الصف
+    activeRow.querySelector('.item-id').value   = selectedItemId;
+    activeRow.querySelector('.item-name').value = e.target.dataset.name;
+    activeRow.querySelector('.barcode').value   = e.target.dataset.barcode;
+    activeRow.querySelector('.category').value  = e.target.dataset.category;
+    activeRow.querySelector('.unit').value      = e.target.dataset.unit;
+
+    bootstrap.Modal.getInstance(
+      document.getElementById('itemSearchModal')
+    ).hide();
+  }
+
+  /* ---------- إضافة صف ---------- */
+  if (e.target.closest('.add-row')) {
     const row = e.target.closest('tr');
 
-    if(row.querySelector('.item-id').value==='' ||
-       row.querySelector('.quantity').value===''){
+    if (
+      row.querySelector('.item-id').value === '' ||
+      row.querySelector('.quantity').value === ''
+    ) {
       alert('اختر الصنف وأدخل الكمية أولاً');
       return;
     }
 
     const newRow = row.cloneNode(true);
-    newRow.querySelectorAll('input').forEach(i=>i.value='');
+    newRow.querySelectorAll('input').forEach(input => input.value = '');
+
     document.getElementById('items-table')
-      .insertBefore(newRow,row.nextSibling);
+      .insertBefore(newRow, row.nextSibling);
+
     reindex();
   }
 
-  if(e.target.closest('.delete-row')){
+  /* ---------- حذف صف ---------- */
+  if (e.target.closest('.delete-row')) {
     const rows = document.querySelectorAll('#items-table tr');
-    if(rows.length===1){
+
+    if (rows.length === 1) {
       alert('لا يمكن حذف آخر صف');
       return;
     }
+
     e.target.closest('tr').remove();
     reindex();
   }
 });
 
-function reindex(){
-  document.querySelectorAll('#items-table tr').forEach((r,i)=>{
-    r.querySelector('.row-index').innerText=i+1;
-    r.querySelectorAll('input').forEach(el=>{
-      if(el.name){
-        el.name = el.name.replace(/items\[\d+\]/,'items['+i+']');
+/* ---------- إعادة الترقيم ---------- */
+function reindex() {
+  document.querySelectorAll('#items-table tr').forEach((row, index) => {
+    row.querySelector('.row-index').innerText = index + 1;
+
+    row.querySelectorAll('input').forEach(input => {
+      if (input.name) {
+        input.name = input.name.replace(
+          /items\[\d+\]/,
+          'items[' + index + ']'
+        );
       }
     });
   });
 }
+
+/* ---------- تحميل الأصناف ---------- */
+function loadPopupItems() {
+  fetch(`{{ route('items.popup') }}`)
+    .then(response => response.json())
+    .then(items => {
+
+      const tbody = document.getElementById('popup-items-body');
+      tbody.innerHTML = '';
+
+      if (items.length === 0) {
+        tbody.innerHTML =
+          `<tr><td colspan="5">لا توجد أصناف</td></tr>`;
+        return;
+      }
+
+      items.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.barcode ?? ''}</td>
+            <td>${item.name}</td>
+            <td>${item.category ?? ''}</td>
+            <td>${item.unit ?? ''}</td>
+            <td>
+              <button type="button"
+                class="btn btn-sm btn-primary select-item"
+                data-id="${item.id}"
+                data-name="${item.name}"
+                data-barcode="${item.barcode ?? ''}"
+                data-category="${item.category ?? ''}"
+                data-unit="${item.unit ?? ''}">
+                اختيار
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+}
 </script>
+
 
 </body>
 </html>

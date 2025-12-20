@@ -88,3 +88,5 @@ Route::prefix('operations')
         Route::post('{operation}/cancel', [OperationController::class, 'cancel'])
             ->name('cancel');
     });
+    Route::get('items/popup', [OperationController::class, 'popupItems'])
+    ->name('items.popup');
