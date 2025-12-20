@@ -106,9 +106,11 @@
                             <p class="text-muted">
                                 Manage supplier profiles, purchase orders, and procurement contracts.
                             </p>
-                            <a href="#" class="fw-semibold text-primary mt-auto d-inline-block">
-                                View Supplier Directory →
+                            <a href="{{ route('partners.suppliers') }}"
+                                class="btn btn-outline-primary">
+                                Suppliers
                             </a>
+
                         </div>
                     </div>
 
@@ -121,9 +123,11 @@
                             <p class="text-muted">
                                 Access customer database and manage contact details.
                             </p>
-                            <a href="#" class="fw-semibold text-primary mt-auto d-inline-block">
-                                View Customer Database →
+                            <a href="{{ route('partners.customers') }}"
+                                class="btn btn-outline-success">
+                                Customers
                             </a>
+
                         </div>
                     </div>
                 </div>

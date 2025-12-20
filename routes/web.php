@@ -4,34 +4,31 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PartnerController;
 
+
+
 use Illuminate\Support\Facades\Auth;
 
 
 
-Route::prefix('partners')->middleware('auth')->group(function () {
 
-    // عرض جميع الشركاء
-    Route::get('/', [PartnerController::class, 'index'])
-        ->name('partners.index');
+Route::prefix('partners')->group(function () {
 
-    // إضافة شريك
+    // Suppliers Page
+    Route::get('/suppliers', [PartnerController::class, 'suppliers'])
+        ->name('partners.suppliers');
+
+    // Customers Page
+    Route::get('/customers', [PartnerController::class, 'customers'])
+        ->name('partners.customers');
+
+    // Store
     Route::post('/', [PartnerController::class, 'store'])
         ->name('partners.store');
 
-    // تحديث شريك
-    Route::put('/{id}', [PartnerController::class, 'update'])
-        ->name('partners.update');
-
-    // حذف شريك
-    Route::delete('/{id}', [PartnerController::class, 'destroy'])
-        ->name('partners.destroy');
-
-    // البحث
+    // Search by ID
     Route::get('/search', [PartnerController::class, 'search'])
         ->name('partners.search');
-
 });
-
 
 // تسجيل الخروج 
 Route::post('/logout', function () {
@@ -44,6 +41,9 @@ Route::get('/Welcome', function () {
     return view('Welcome');
 });
 
+Route::get('/partners/pdf/{type}', [PartnerController::class, 'exportPdf'])
+    ->whereIn('type', ['supplier', 'customer'])
+    ->name('partners.pdf');
 
 // صفحة تسجيل الدخول
 Route::get('/login', function () {
@@ -69,10 +69,6 @@ Route::get('/product-management', function () {
 })->name('ProductManagement');
 
 
-
-// Route::get('/SupplierCustomer', function () {
-//     return view('Supplier_Customer');
-// })->name('SupplierCustomer');
 
 
 Route::get('/TranscationSelector', function () {

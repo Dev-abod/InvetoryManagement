@@ -19,41 +19,43 @@
       background: #f6f6f8;
     }
 
-    /* Sidebar */
+    .card {
+      border-radius: 14px;
+      border: 1px solid #eef1f6;
+    }
+
+    .shadow-soft {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .04);
+    }
+
+    .table thead th {
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: .05em;
+      color: #6b7280;
+    }
+
+    .table tbody tr {
+      height: 56px;
+    }
+
+    .table tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .table tbody td:first-child {
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .badge {
+      border-radius: 8px;
+    }
+
     .sidebar {
       width: 260px;
       background: linear-gradient(to bottom, #0f172a, #1e3a8a);
       color: #cbd5f5;
-    }
-
-    .sidebar a {
-      color: #cbd5f5;
-      text-decoration: none;
-    }
-
-    .sidebar a.active,
-    .sidebar a:hover {
-      background: #ffffff;
-      color: #135bec;
-      border-radius: .5rem;
-    }
-
-    .brand-icon {
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, .15);
-      border-radius: .5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .icon-input {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6c757d;
     }
   </style>
 </head>
@@ -61,8 +63,6 @@
 <body class="d-flex vh-100 overflow-hidden">
 
   <!-- Sidebar -->
-
-
   <!-- {{-- استدعاء السايدبار --}} -->
   @include('layouts.sidebar')
 
@@ -73,127 +73,145 @@
 
     <!-- Header -->
     <header class="bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
-      <div class="text-secondary small">
+      <div>
+        <h5 class="mb-0 fw-semibold">Supplier Management</h5>
+        <small class="text-muted">Manage your partner relationships</small>
+      </div>
 
-        Home / <strong class="text-dark">Partners</strong>
-        <div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-light rounded-circle">
-              <span class="material-symbols-outlined">notifications</span>
-            </button>
-            <button class="btn btn-light rounded-circle">
-              <span class="material-symbols-outlined">settings</span>
-            </button>
-          </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light rounded-circle">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="btn btn-light rounded-circle">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+      </div>
     </header>
 
     <!-- Content -->
     <main class="p-4 overflow-auto">
 
-      <!-- Search -->
-      <!-- <div class="card mb-4">
-        <div class="card-body d-flex flex-column flex-md-row gap-3 align-items-end">
-          <div class="flex-grow-1 position-relative">
-            <label class="form-label fw-semibold">Search Suppliers</label>
-            <span class="material-symbols-outlined icon-input">search</span>
-            <input type="text" class="form-control ps-5" placeholder="Enter Supplier ID or Name">
-          </div>
-          <a  href="{{ route('partners.search') }}" class="btn btn-primary px-4"></a>
-         
+      <!-- Search Card -->
+      <div class="card shadow-soft mb-4">
+        <div class="card-body">
+          <h6 class="text-uppercase text-muted fw-semibold mb-3">
+            Search Suppliers
+          </h6>
+
+          <form method="GET" action="{{ route('partners.search') }}" class="d-flex gap-3">
+            <div class="flex-grow-1 position-relative">
+              <span class="material-symbols-outlined position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
+                search
+              </span>
+              <input type="number"
+                name="search"
+                class="form-control ps-5"
+                placeholder="Enter Supplier ID or Name..."
+                required>
+            </div>
+            <button class="btn btn-primary px-4">Show</button>
+          </form>
         </div>
-      </div> -->
-
-      <!-- تم اخده من شات التأكد منه لاحقا -->
-<form method="GET" action="{{ route('partners.search') }}" class="mb-3">
-  <div class="input-group">
-    <input type="number"
-           name="search"
-           class="form-control"
-           placeholder="Enter Partner ID"
-           required>
-    <button class="btn btn-primary">
-      <span class="material-symbols-outlined">search</span>
-    </button>
-  </div>
-</form>
-
-
-
+      </div>
 
       <div class="row g-4">
 
         <!-- Table -->
         <div class="col-lg-8">
-          <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <strong>Supplier List</strong>
-              <div>
+          <div class="card shadow-soft h-100">
+
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined text-primary">store</span>
+                <strong>{{ $List }}</strong>
+              </div>
+              <div class="d-flex gap-2">
                 <button class="btn btn-sm btn-light">
                   <span class="material-symbols-outlined">filter_list</span>
                 </button>
                 <button class="btn btn-sm btn-light">
-                  <span class="material-symbols-outlined">download</span>
+                  <span class="material-symbols-outlined"><a href="{{ route('partners.pdf', $type) }}"
+                      class="btn btn-sm btn-light">
+                      <span class="material-symbols-outlined">download</span>
+                    </a>
+                  </span>
                 </button>
               </div>
             </div>
 
-
-            <!-- يظهر البيانات في الجدول من القاعدة -->
             <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-             
+              <table class="table align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-end">Phone</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  @forelse ($partners as $partner)
+                  <tr>
+                    <td>S{{ str_pad($partner->id, 3, '0', STR_PAD_LEFT) }}</td>
+                    <td>{{ $partner->name }}</td>
+                    <td class="text-end">{{ $partner->phone ?? '-' }}</td>
+                  </tr>
+                  @empty
+                  <tr>
+                    <td colspan="3" class="text-center text-muted py-4">
+                      No data found
+                    </td>
+                  </tr>
+                  @endforelse
+                </tbody>
               </table>
             </div>
 
-            <div class="card-footer d-flex justify-content-between align-items-center">
-              <small class="text-muted">Showing 1–7 of 48</small>
-              <nav>
-                <ul class="pagination pagination-sm mb-0">
-                  <li class="page-item disabled"><a class="page-link">Prev</a></li>
-                  <li class="page-item active"><a class="page-link">1</a></li>
-                  <li class="page-item"><a class="page-link">2</a></li>
-                  <li class="page-item"><a class="page-link">3</a></li>
-                  <li class="page-item"><a class="page-link">Next</a></li>
-                </ul>
-              </nav>
-            </div>
+
           </div>
         </div>
 
-        <!-- Form -->
+        <!-- Manage Details -->
         <div class="col-lg-4">
-          <div class="card sticky-top">
+          <div class="card shadow-soft sticky-top">
+
             <div class="card-header fw-bold">
               Manage Details
             </div>
+
             <div class="card-body">
 
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <small class="text-muted">Current Selection</small>
-                <span class="badge bg-primary">ID: S005</span>
-              </div>
 
-              <div class="mb-3 position-relative">
-                <label class="form-label">Supplier Name</label>
-                <span class="material-symbols-outlined icon-input">business</span>
-                <input type="text" class="form-control ps-5" value="Umbrella Corp">
-              </div>
+              <form action="{{ route('partners.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="type" value="{{ $type }}">
 
-              <div class="mb-3 position-relative">
-                <label class="form-label">Phone Number</label>
-                <span class="material-symbols-outlined icon-input">call</span>
-                <input type="text" class="form-control ps-5" value="555-0105">
-              </div>
+                <div class="mb-3">
+                  <label class="form-label">{{ $Name }}</label>
+                  <input type="text"
+                    name="Supplier_Name"
+                    class="form-control"
+                    required>
+                </div>
 
-              <button class="btn btn-outline-secondary w-100 mb-3">
-                <span class="material-symbols-outlined me-1">restart_alt</span>
-                Clear to Add New
-              </button>
+                <div class="mb-4">
+                  <label class="form-label">{{ $Phone }}</label>
+                  <input type="text"
+                    name="Supplier_Phone"
+                    class="form-control"
+                    required>
+                </div>
 
-              <button class="btn btn-primary w-100 mb-2">
-                <span class="material-symbols-outlined me-1">add_circle</span>
-                Add Supplier
-              </button>
+                <button class="btn btn-outline-secondary w-100 mb-3">
+                  <span class="material-symbols-outlined me-1">restart_alt</span>
+                  Clear to Add New
+                </button>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">
+                  <span class="material-symbols-outlined me-1">add</span>
+                  Add {{ $Add }}
+                </button>
+              </form>
 
               <div class="d-flex gap-2 mb-3">
                 <button class="btn btn-outline-secondary w-50">
@@ -206,67 +224,14 @@
                 </button>
               </div>
 
-              <a href="#" class="d-block text-center text-primary fw-medium">
-                Show All Suppliers →
-              </a>
 
             </div>
           </div>
         </div>
 
       </div>
-
     </main>
   </div>
-
-
-
-  @if(session('partner'))
-<div class="modal fade show"
-     id="partnerModal"
-     tabindex="-1"
-     style="display:block; background:rgba(0,0,0,.5);">
-
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">
-          Partner Details
-        </h5>
-        <a href="{{ route('partners.index') }}" class="btn-close btn-close-white"></a>
-      </div>
-
-      <div class="modal-body">
-        <p><strong>ID:</strong> {{ session('partner')->id }}</p>
-        <p><strong>Name:</strong> {{ session('partner')->name }}</p>
-        <p><strong>Email:</strong> {{ session('partner')->email ?? '-' }}</p>
-        <p><strong>Phone:</strong> {{ session('partner')->phone ?? '-' }}</p>
-        <p>
-          <strong>Type:</strong>
-          @if(session('partner')->type === 'supplier')
-            <span class="badge bg-primary">Supplier</span>
-          @elseif(session('partner')->type === 'customer')
-            <span class="badge bg-success">Customer</span>
-          @else
-            <span class="badge bg-warning text-dark">Both</span>
-          @endif
-        </p>
-      </div>
-
-      <div class="modal-footer">
-        <a href="{{ route('partners.index') }}"
-           class="btn btn-secondary">
-          Close
-        </a>
-      </div>
-
-    </div>
-  </div>
-</div>
-@endif
-
-
 </body>
 
 </html>
