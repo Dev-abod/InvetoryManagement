@@ -50,6 +50,25 @@ body{
 <body>
 
 <div class="container-fluid p-3">
+  {{-- ================= Success Message ================= --}}
+@if (session('success'))
+  <div class="alert alert-success alert-dismissible fade show">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
+
+{{-- ================= Validation Errors ================= --}}
+@if ($errors->any())
+  <div class="alert alert-danger">
+    <ul class="mb-0">
+      @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
 
 {{-- 🔹 الفورم مربوط بالـ Route الصحيح --}}
 <form method="POST" action="{{ route('operations.store', $type) }}">
@@ -65,13 +84,11 @@ body{
 <div class="p-3">
   <div class="row g-2">
 
-    {{-- رقم العملية (AUTO) --}}
-    <div class="col-md-3">
-      <label class="form-label">رقم العملية</label>
-      <input class="form-control" value="AUTO" readonly>
-      {{-- الرقم الحقيقي يُنشأ في الباك --}}
-      <input type="hidden" name="number" value="{{ uniqid() }}">
-    </div>
+   {{-- رقم العملية (AUTO) --}}
+<div class="col-md-3">
+  <label class="form-label">رقم العملية</label>
+  <input class="form-control" value="يُولّد تلقائيًا" readonly>
+</div>
 
     {{-- التاريخ --}}
     <div class="col-md-3">
@@ -79,6 +96,7 @@ body{
       <input type="date"
              name="date"
              class="form-control"
+             value="{{ old('date') }}"
              required>
     </div>
 
@@ -92,6 +110,7 @@ body{
 
     @foreach($partners as $partner)
         <option value="{{ $partner->id }}">
+        @selected(old('partner_id') == $partner->id)>
             {{ $partner->name }}
         </option>
     @endforeach
@@ -108,6 +127,7 @@ body{
 
     @foreach($warehouses as $warehouse)
         <option value="{{ $warehouse->id }}">
+          @selected(old('warehouse_id') == $warehouse->id)>
             {{ $warehouse->name }}
         </option>
     @endforeach

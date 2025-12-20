@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 
 
@@ -134,7 +135,6 @@ class OperationController extends Controller
     {
         $rules = [
             'date'             => 'required|date',
-            'number'           => 'required|string',
             'warehouse_id'     => 'required|exists:warehouses,id',
             'items'            => 'required|array|min:1',
             'items.*.item_id'  => 'required|exists:items,id',
@@ -168,18 +168,20 @@ class OperationController extends Controller
     {
         $grouped = collect($items)->groupBy('item_id');
 
-        foreach ($grouped as $itemId => $rows) {
-            $totalQty = $rows->sum('quantity');
+    foreach ($grouped as $itemId => $rows) {
+        $totalQty = $rows->sum('quantity');
 
-            $stock = Stock::where([
-                'item_id'      => $itemId,
-                'warehouse_id' => $warehouseId,
-            ])->first();
+        $stock = Stock::where([
+            'item_id'      => $itemId,
+            'warehouse_id' => $warehouseId,
+        ])->first();
 
-            if (!$stock || $stock->quantity < $totalQty) {
-                abort(422, 'الكمية غير متوفرة في المخزون');
-            }
+        if (!$stock || $stock->quantity < $totalQty) {
+            throw ValidationException::withMessages([
+                'items' => 'الكمية غير متوفرة في المخزون',
+            ]);
         }
+    }
     }
 
     private function applyStockChange(
