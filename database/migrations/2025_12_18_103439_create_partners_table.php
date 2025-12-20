@@ -12,15 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('partners', function (Blueprint $table) {
-      $table->id();
-      $table->string('name');
-      $table->enum('type', ['customer', 'supplier', 'both']);
+            $table->id();
+            $table->string('name');
+            $table->enum('type', ['customer', 'supplier', 'both']);
 
-    // optional for next version
-    $table->string('email')->nullable();
-    $table->string('phone')->nullable();
-
-    $table->timestamps();
+            // optional for next version
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->timestamps();
         });
     }
 

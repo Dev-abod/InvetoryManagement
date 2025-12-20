@@ -2,8 +2,35 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PartnerController;
 
 use Illuminate\Support\Facades\Auth;
+
+
+
+Route::prefix('partners')->middleware('auth')->group(function () {
+
+    // عرض جميع الشركاء
+    Route::get('/', [PartnerController::class, 'index'])
+        ->name('partners.index');
+
+    // إضافة شريك
+    Route::post('/', [PartnerController::class, 'store'])
+        ->name('partners.store');
+
+    // تحديث شريك
+    Route::put('/{id}', [PartnerController::class, 'update'])
+        ->name('partners.update');
+
+    // حذف شريك
+    Route::delete('/{id}', [PartnerController::class, 'destroy'])
+        ->name('partners.destroy');
+
+    // البحث
+    Route::get('/search', [PartnerController::class, 'search'])
+        ->name('partners.search');
+
+});
 
 
 // تسجيل الخروج 
@@ -43,9 +70,9 @@ Route::get('/product-management', function () {
 
 
 
-Route::get('/SupplierCustomer', function () {
-    return view('Supplier_Customer');
-})->name('SupplierCustomer');
+// Route::get('/SupplierCustomer', function () {
+//     return view('Supplier_Customer');
+// })->name('SupplierCustomer');
 
 
 Route::get('/TranscationSelector', function () {
@@ -68,3 +95,9 @@ Route::get('/Units', function () {
 Route::get('/Categories', function () {
     return view('Sub_ProductManagement.Categories');
 })->name('Categories');
+
+
+
+Route::get('/SelectorParents', function () {
+    return view('SelectorPartners');
+})->name('SelectorParents');
