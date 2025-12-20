@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OperationController;
+
 
 use Illuminate\Support\Facades\Auth;
 
@@ -68,3 +70,21 @@ Route::get('/Units', function () {
 Route::get('/Categories', function () {
     return view('Sub_ProductManagement.Categories');
 })->name('Categories');
+
+Route::prefix('operations')
+    ->name('operations.')
+    ->middleware(['auth'])
+    ->group(function () {
+
+        Route::get('{type}/create', [OperationController::class, 'create'])
+            ->name('create');
+
+        Route::post('{type}', [OperationController::class, 'store'])
+            ->name('store');
+
+        Route::post('{operation}/correct', [OperationController::class, 'correct'])
+            ->name('correct');
+
+        Route::post('{operation}/cancel', [OperationController::class, 'cancel'])
+            ->name('cancel');
+    });
