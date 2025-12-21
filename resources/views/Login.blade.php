@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Login - Inventory Management System</title>
@@ -19,9 +20,11 @@
       font-family: 'Inter', sans-serif;
       background: #f6f6f8;
     }
+
     .login-card {
       border-radius: 1rem;
     }
+
     .brand-icon {
       width: 56px;
       height: 56px;
@@ -33,6 +36,7 @@
       justify-content: center;
       box-shadow: 0 10px 20px rgba(19, 91, 236, 0.3);
     }
+
     .form-control {
       background: #f8f9fc;
     }
@@ -41,85 +45,110 @@
 
 <body class="d-flex align-items-center min-vh-100">
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
 
-      <!-- Brand -->
-      <div class="text-center mb-4">
-        <div class="brand-icon mx-auto mb-3">
-          <span class="material-symbols-outlined fs-3">inventory_2</span>
+        <!-- Brand -->
+        <div class="text-center mb-4">
+          <div class="brand-icon mx-auto mb-3">
+            <span class="material-symbols-outlined fs-3">inventory_2</span>
+          </div>
+          <h1 class="fw-bold">Inventory System</h1>
         </div>
-        <h1 class="fw-bold">Inventory System</h1>
-      </div>
 
-      <!-- Login Card -->
-      <div class="card login-card shadow-sm border-0 p-4">
-        <div class="card-body">
+        <!-- Login Card -->
+        <div class="card login-card shadow-sm border-0 p-4">
+          <div class="card-body">
 
-          <h5 class="fw-bold mb-1">Sign in to your account</h5>
-          <p class="text-muted mb-4">Enter your details to access the dashboard.</p>
+            <h5 class="fw-bold mb-1">Sign in to your account</h5>
+            <p class="text-muted mb-4">Enter your details to access the dashboard.</p>
 
-          {{-- رسالة الخطأ --}}
-          @if ($errors->has('login_error'))
-            <div class="alert alert-danger">
-              {{ $errors->first('login_error') }}
-            </div>
-          @endif
+            {{-- رسالة الخطأ --}}
+            @if ($errors->has('login_error'))
+            <div class="modal fade show"
+              id="loginErrorModal"
+              tabindex="-1"
+              aria-modal="true"
+              role="dialog"
+              style="display: block; background: rgba(0,0,0,.5);">
 
-<form method="POST" action="{{ route('login.submit') }}">
-            @csrf
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
 
-            <!-- Username -->
-            <div class="mb-3">
-              <label class="form-label">Email or Username</label>
-              <div class="position-relative">
-                <input
-                  type="text"
-                  name="username"
-                  class="form-control py-3 pe-5"
-                  required
-                >
-                <span class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
-                  person
-                </span>
+                  <div class="modal-header">
+                    <h5 class="modal-title text-danger">Login Failed</h5>
+                  </div>
+
+                  <div class="modal-body text-center">
+                    <p class="mb-0">
+                      {{ $errors->first('login_error') }}
+                    </p>
+                  </div>
+                  <div class="modal-footer justify-content-center">
+                    <a href="{{ route('login') }}" class="btn btn-primary">
+                      OK
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
+            @endif
 
-            <!-- Password -->
-            <div class="mb-3">
-              <label class="form-label">Password</label>
-              <div class="position-relative">
-                <input
-                  type="password"
-                  name="password"
-                  class="form-control py-3 pe-5"
-                  required
-                >
-                <span class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
-                  lock
-                </span>
+
+
+            <form method="POST" action="{{ route('login.submit') }}">
+              @csrf
+
+              <!-- Username -->
+              <div class="mb-3">
+                <label class="form-label">Email or Username</label>
+                <div class="position-relative">
+                  <input
+                    type="text"
+                    name="username"
+                    class="form-control py-3 pe-5"
+                    required>
+                  <span class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
+                    person
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <!-- Button -->
-            <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold">
-              Sign in
-            </button>
+              <!-- Password -->
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <div class="position-relative">
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-control py-3 pe-5"
+                    required>
+                  <span class="material-symbols-outlined position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
+                    lock
+                  </span>
+                </div>
+              </div>
 
-          </form>
+              <!-- Button -->
+              <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold">
+                Sign in
+              </button>
 
+            </form>
+
+          </div>
         </div>
+
+        <!-- Footer -->
+        <p class="text-center text-muted small mt-4">
+          © 2024 Inventory Management System. All rights reserved.
+        </p>
+
       </div>
-
-      <!-- Footer -->
-      <p class="text-center text-muted small mt-4">
-        © 2024 Inventory Management System. All rights reserved.
-      </p>
-
     </div>
   </div>
-</div>
 
 </body>
+
 </html>
