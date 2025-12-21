@@ -126,7 +126,7 @@
             <h5 class="fw-bold">Partners</h5>
             <p class="text-muted small">Manage suppliers and distributors.</p>
 
-            <a href="{{ route('SupplierCustomer') }}"
+            <a href="{{ route('SelectorParents') }}"
               class="btn btn-outline-primary rounded-pill mt-auto">
               View Partners
             </a>

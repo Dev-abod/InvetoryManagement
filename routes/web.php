@@ -1,17 +1,46 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OperationController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PartnerController;
 
 
-use Illuminate\Support\Facades\Auth;
+
+
+
+
+
+
+Route::prefix('partners')->group(function () {
+
+    Route::get('/suppliers', [PartnerController::class, 'suppliers'])
+        ->name('partners.suppliers');
+
+    Route::get('/customers', [PartnerController::class, 'customers'])
+        ->name('partners.customers');
+
+    Route::get('/search', [PartnerController::class, 'search'])
+        ->name('partners.search');
+
+    // CRUD الصحيح
+    Route::post('/', [PartnerController::class, 'store'])
+        ->name('partners.store');
+
+    Route::put('/{id}', [PartnerController::class, 'update'])
+        ->name('partners.update');
+
+    Route::delete('/{id}', [PartnerController::class, 'destroy'])
+        ->name('partners.destroy');
+});
 
 
 // تسجيل الخروج 
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect()->route('Login');
+    return redirect()->route('login');
 })->name('logout');
 
 
@@ -19,6 +48,9 @@ Route::get('/Welcome', function () {
     return view('Welcome');
 });
 
+Route::get('/partners/pdf/{type}', [PartnerController::class, 'exportPdf'])
+    ->whereIn('type', ['supplier', 'customer'])
+    ->name('partners.pdf');
 
 // صفحة تسجيل الدخول
 Route::get('/login', function () {
@@ -39,15 +71,17 @@ Route::get('/home', function () {
 
 
 
-Route::get('/product-management', function () {
-    return view('ProductManagement');
-})->name('ProductManagement');
+// Route::get('/product-management', function () {
+//     return view('ProductManagement');
+// })->name('ProductManagement');
 
 
+use App\Http\Controllers\ProductManagementController;
 
-Route::get('/SupplierCustomer', function () {
-    return view('Supplier_Customer');
-})->name('SupplierCustomer');
+Route::get('/product-management', [ProductManagementController::class, 'index'])
+    ->name('ProductManagement');
+
+
 
 
 Route::get('/TranscationSelector', function () {
@@ -56,20 +90,59 @@ Route::get('/TranscationSelector', function () {
 
 
 
-Route::get('/Products', function () {
-    return view('Sub_ProductManagement.Products');
-})->name('Products');
+// Route::get('/Products', function () {
+//     return view('Sub_ProductManagement.Products');
+// })->name('Products');
+
+use App\Http\Controllers\ProductController;
+
+Route::get('/Products', [ProductController::class, 'index'])
+    ->name('Products');
+
+Route::post('/Products', [ProductController::class, 'store'])
+    ->name('Products.store');
+
+Route::post('/Products/{id}/update', [ProductController::class, 'update'])
+    ->name('Products.update');
+
+Route::post('/Products/{id}/delete', [ProductController::class, 'destroy'])
+    ->name('Products.delete');
 
 
-Route::get('/Units', function () {
-    return view('Sub_ProductManagement.Units');
-})->name('Units');
 
+// Route::get('/Units', function () {
+//     return view('Sub_ProductManagement.Units');
+// })->name('Units');
+
+use App\Http\Controllers\UnitController;
+
+Route::get('/Units', [UnitController::class, 'index'])
+    ->name('Units');
+
+Route::post('/Units', [UnitController::class, 'store'])
+    ->name('Units.store');
+
+Route::post('/Units/{id}/update', [UnitController::class, 'update'])
+    ->name('Units.update');
+
+Route::post('/Units/{id}/delete', [UnitController::class, 'destroy'])
+    ->name('Units.delete');
+
+
+
+Route::get('/Categories', [CategoryController::class, 'index'])->name('Categories');
+Route::post('/Categories', [CategoryController::class, 'store'])->name('Categories.store');
+Route::post('/Categories/{id}/update', [CategoryController::class, 'update'])->name('Categories.update');
+Route::post('/Categories/{id}/delete', [CategoryController::class, 'destroy'])->name('Categories.delete');
+
+
+// Route::resource('Categories', CategoryController::class);
 
 
 Route::get('/Categories', function () {
     return view('Sub_ProductManagement.Categories');
 })->name('Categories');
+
 
 Route::prefix('operations')
     ->name('operations.')
@@ -105,3 +178,8 @@ Route::prefix('operations')
 
     });
    
+
+Route::get('/SelectorParents', function () {
+    return view('SelectorPartners');
+})->name('SelectorParents');
+

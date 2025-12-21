@@ -72,47 +72,90 @@
     <div class="mb-4">
       <h3 class="fw-bold">Product Management</h3>
       <p class="text-muted">Create, update and manage your inventory items.</p>
+
+       <div class="text-end mb-3" >
+        <a href="{{ uri('/product-management') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Product Management
+            </a>
+        </div>
     </div>
 
     <!-- Form Card -->
-    <div class="card mb-4">
-      <div class="card-header fw-bold">Product Details</div>
-      <div class="card-body">
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">Barcode / SKU</label>
-            <input class="form-control" placeholder="Scan or enter barcode">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Product Name</label>
-            <input class="form-control" placeholder="Enter product name">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Category</label>
-            <select class="form-select">
-              <option>Select Category</option>
-              <option>Electronics</option>
-              <option>Furniture</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Unit</label>
-            <select class="form-select">
-              <option>Select Unit</option>
-              <option>pcs</option>
-              <option>box</option>
-            </select>
-          </div>
+<div class="card mb-4">
+  <div class="card-header fw-bold">Product Details</div>
+  <div class="card-body">
+
+    <form method="POST"
+      action="{{ isset($editProduct) ? route('Products.update',$editProduct->id) : route('Products.store') }}">
+      @csrf
+
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Barcode / SKU</label>
+          <input class="form-control"
+                 name="barcode"
+                 value="{{ $editProduct->barcode ?? '' }}"
+                 placeholder="Scan or enter barcode">
         </div>
 
-        <div class="mt-4 d-flex gap-2">
-          <button class="btn btn-outline-primary">Add Product</button>
-          <div class="flex-grow-1"></div>
-          <button class="btn btn-secondary">Cancel</button>
-          <button class="btn btn-primary">Save</button>
+        <div class="col-md-6">
+          <label class="form-label">Product Name</label>
+          <input class="form-control"
+                 name="name"
+                 value="{{ $editProduct->name ?? '' }}"
+                 placeholder="Enter product name">
         </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Category</label>
+          <select name="category_id" class="form-select">
+            <option>Select Category</option>
+            @foreach($categories as $category)
+              <option value="{{ $category->id }}"
+                {{ isset($editProduct) && $editProduct->category_id == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Unit</label>
+          <select name="unit_id" class="form-select">
+            <option>Select Unit</option>
+            @foreach($units as $unit)
+              <option value="{{ $unit->id }}"
+                {{ isset($editProduct) && $editProduct->unit_id == $unit->id ? 'selected' : '' }}>
+                {{ $unit->name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
       </div>
-    </div>
+
+      <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-outline-primary"
+          {{ isset($editProduct) ? 'disabled' : '' }}>
+          Add Product
+        </button>
+
+        <div class="flex-grow-1"></div>
+
+        <a href="{{ route('Products') }}" class="btn btn-secondary">
+          Cancel
+        </a>
+
+        <button class="btn btn-primary"
+          {{ isset($editProduct) ? '' : 'disabled' }}>
+          Save
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
 
     <!-- Table -->
     <div class="card">
@@ -134,32 +177,48 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1001</td>
-              <td class="text-muted">883921045</td>
-              <td><strong>Office Chair</strong></td>
-              <td><span class="badge bg-info-subtle text-info">Furniture</span></td>
-              <td>pcs</td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-light">
-                  <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="btn btn-sm btn-light text-danger">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
+@foreach($products as $product)
+<tr>
+  <td>{{ $product->id }}</td>
+  <td class="text-muted">{{ $product->barcode }}</td>
+  <td><strong>{{ $product->name }}</strong></td>
+  <td>
+    <span class="badge bg-info-subtle text-info">
+      {{ $product->category->name }}
+    </span>
+  </td>
+  <td>{{ $product->unit->name }}</td>
+  <td class="text-end">
+
+    <a href="{{ route('Products',['edit'=>$product->id]) }}"
+       class="btn btn-sm btn-light">
+      <span class="material-symbols-outlined">edit</span>
+    </a>
+
+    <form method="POST"
+          action="{{ route('Products.delete',$product->id) }}"
+          class="d-inline"
+          onsubmit="return confirm('Are you sure?')">
+      @csrf
+      <button class="btn btn-sm btn-light text-danger">
+        <span class="material-symbols-outlined">delete</span>
+      </button>
+    </form>
+
+  </td>
+</tr>
+@endforeach
+</tbody>
         </table>
       </div>
 
-      <div class="card-footer d-flex justify-content-between">
+      <!-- <div class="card-footer d-flex justify-content-between">
         <small class="text-muted">Page 1 of 12</small>
         <div>
           <button class="btn btn-sm btn-outline-secondary" disabled>Previous</button>
           <button class="btn btn-sm btn-outline-secondary">Next</button>
         </div>
-      </div>
+      </div> -->
     </div>
 
   </main>

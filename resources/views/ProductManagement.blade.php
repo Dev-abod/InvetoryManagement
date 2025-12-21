@@ -91,9 +91,9 @@
       </div>
 
       <div class="d-flex align-items-center gap-3">
-        <input class="form-control form-control-sm d-none d-md-block" style="width:220px" placeholder="Search inventory">
-        <button class="btn btn-light rounded-circle">
-          <span class="material-symbols-outlined">notifications</span>
+        <!-- <input class="form-control form-control-sm d-none d-md-block" style="width:220px" placeholder="Search inventory"> -->
+        <!-- <button class="btn btn-light rounded-circle"> -->
+          <!-- <span class="material-symbols-outlined">notifications</span> -->
         </button>
       </div>
     </header>
@@ -101,8 +101,17 @@
     <!-- Content -->
     <main class="p-4 overflow-auto">
       <div class="mb-4">
+      
+
         <h2 class="fw-black">Quick Product Actions</h2>
-        <p class="text-muted">Manage your inventory essentials efficiently.</p>
+        <p class="text-muted" style="display: inline;">Manage your inventory essentials efficiently.</p>
+
+         <div class="text-end mb-3" >
+        <a href="{{ route('home') }}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
+
       </div>
 
       <!-- Action Cards -->
@@ -149,42 +158,50 @@
       </div>
 
       <!-- Recent Activity -->
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <strong>Recent Activity</strong>
-          <a href="#" class="text-primary small fw-medium">View Full Log</a>
-        </div>
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Product List</strong>
+        <input class="form-control form-control-sm w-25" placeholder="Search...">
+      </div>
 
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+            <thead class="table-light" align="center">
               <tr>
-                <th>Action</th>
-                <th>User</th>
-                <th>Date</th>
-                <th>Status</th>
+                <th>ID</th>
+                <th>Barcode / SKU</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>units</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Added “Wireless Mouse M350”</td>
-                <td>Alex Morgan</td>
-                <td class="text-muted">Just now</td>
-                <td><span class="badge bg-success">Completed</span></td>
-              </tr>
-              <tr>
-                <td>Updated Stock “Dell Monitor 24”</td>
-                <td>Sarah Jenkins</td>
-                <td class="text-muted">2 hours ago</td>
-                <td><span class="badge bg-primary">Pending</span></td>
-              </tr>
-              <tr>
-                <td>New Category “Electronics”</td>
-                <td>Alex Morgan</td>
-                <td class="text-muted">Yesterday</td>
-                <td><span class="badge bg-success">Completed</span></td>
-              </tr>
-            </tbody>
+            <tbody align="center">
+@forelse($products as $product)
+<tr>
+  <th>{{ $product->id }}</th>
+
+  <td>{{ $product->barcode }}</td>
+
+  <td>{{ $product->name }}</td>
+
+  <td class="text-muted">
+    {{ $product->category?->name ?? '-' }}
+  </td>
+
+  <td>
+    <span class="badge bg-success">
+      {{ $product->unit?->name ?? '-' }}
+    </span>
+  </td>
+</tr>
+@empty
+<tr>
+  <td colspan="5" class="text-muted text-center py-4">
+    No products found
+  </td>
+</tr>
+@endforelse
+</tbody>
+
           </table>
         </div>
       </div>
