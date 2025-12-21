@@ -107,7 +107,7 @@
         <p class="text-muted" style="display: inline;">Manage your inventory essentials efficiently.</p>
 
          <div class="text-end mb-3" >
-        <a href="/" class="btn btn-outline-primary">
+        <a href="{{ route('home') }}" class="btn btn-outline-primary">
         <i class="bi bi-arrow-left"></i> Back to Home
             </a>
         </div>

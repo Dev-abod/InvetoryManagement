@@ -74,7 +74,7 @@
       <p class="text-muted">Create, update and manage your inventory items.</p>
 
        <div class="text-end mb-3" >
-        <a href="/" class="btn btn-outline-primary">
+        <a href="{{ uri('/product-management') }}" class="btn btn-outline-primary">
         <i class="bi bi-arrow-left"></i> Back to Product Management
             </a>
         </div>
