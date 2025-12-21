@@ -28,7 +28,6 @@
         <span class="material-symbols-outlined me-2">inventory</span>
         Product Management
       </a>
-
     </li>
 
     <!-- Partners -->
@@ -49,27 +48,33 @@
       </a>
     </li>
 
-      <!-- Inventory Management -->
-    <!-- <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('TranscationSelector') ? 'active fw-semibold' : 'text-white' }}"
-        href="#">
-        <span class="material-symbols-outlined me-2">sync_alt</span>
-         Inventory Management
-      </a>
-    </li> -->
-
     <!-- Reports -->
     <li class="nav-item">
-      <a class="nav-link  text-white" href="#"><span class="material-symbols-outlined me-2">bar_chart</span>Reports</a>
+      <a class="nav-link text-white" href="#">
+        <span class="material-symbols-outlined me-2">bar_chart</span>
+        Reports
+      </a>
     </li>
   </ul>
-    
 
-  <div class="border-top border-light pt-3 d-flex align-items-center gap-3">
-    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="User">
-    <div>
-      <div class="fw-semibold text-white">Jane Doe</div>
-      <small class="text-secondary">Super Admin</small>
+  <!-- User + Logout -->
+  <div class="border-top border-light pt-3">
+
+        <div class="fw-semibold text-white">
+          {{ Auth::user()->name }}
+        </div>
+        <small class="text-secondary">Super Admin</small>
+      </div>
     </div>
+
+    <!-- Logout Button -->
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit"
+              class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+        <span class="material-symbols-outlined">logout</span>
+        Logout
+      </button>
+    </form>
   </div>
 </aside>

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 // تسجيل الخروج 
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect()->route('Login');
+    return redirect()->route('login');
 })->name('logout');
 
 
