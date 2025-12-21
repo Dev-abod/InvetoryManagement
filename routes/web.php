@@ -2,8 +2,35 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PartnerController;
+
+
 
 use Illuminate\Support\Facades\Auth;
+
+
+
+Route::prefix('partners')->group(function () {
+
+    Route::get('/suppliers', [PartnerController::class, 'suppliers'])
+        ->name('partners.suppliers');
+
+    Route::get('/customers', [PartnerController::class, 'customers'])
+        ->name('partners.customers');
+
+    Route::get('/search', [PartnerController::class, 'search'])
+        ->name('partners.search');
+
+    // CRUD الصحيح
+    Route::post('/', [PartnerController::class, 'store'])
+        ->name('partners.store');
+
+    Route::put('/{id}', [PartnerController::class, 'update'])
+        ->name('partners.update');
+
+    Route::delete('/{id}', [PartnerController::class, 'destroy'])
+        ->name('partners.destroy');
+});
 
 
 // تسجيل الخروج 
@@ -17,6 +44,9 @@ Route::get('/Welcome', function () {
     return view('Welcome');
 });
 
+Route::get('/partners/pdf/{type}', [PartnerController::class, 'exportPdf'])
+    ->whereIn('type', ['supplier', 'customer'])
+    ->name('partners.pdf');
 
 // صفحة تسجيل الدخول
 Route::get('/login', function () {
@@ -43,10 +73,6 @@ Route::get('/product-management', function () {
 
 
 
-Route::get('/SupplierCustomer', function () {
-    return view('Supplier_Customer');
-})->name('SupplierCustomer');
-
 
 Route::get('/TranscationSelector', function () {
     return view('Transcation_Selector');
@@ -68,3 +94,9 @@ Route::get('/Units', function () {
 Route::get('/Categories', function () {
     return view('Sub_ProductManagement.Categories');
 })->name('Categories');
+
+
+
+Route::get('/SelectorParents', function () {
+    return view('SelectorPartners');
+})->name('SelectorParents');
