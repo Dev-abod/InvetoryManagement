@@ -231,11 +231,11 @@ class OperationController extends Controller
     private function pageTitle(string $type): string
     {
         return match ($type) {
-            'in'         => 'عملية توريد مخزني',
-            'out'        => 'عملية صرف مخزني',
-            'return_in'  => 'مردود توريد',
-            'return_out' => 'مردود صرف',
-            default      => 'عملية مخزنية',
+            'in'         => 'Supply',
+            'out'        => 'Exchange',
+            'return_in'  => 'Supply Return',
+            'return_out' => 'Exchange Return',
+            default      => 'Operation',
         };
     }
 

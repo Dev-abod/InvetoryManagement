@@ -234,10 +234,20 @@ body{
 </div>
 
 {{-- ================= Actions ================= --}}
-<div class="action-bar">
+<div class="action-bar d-flex justify-content-between">
+  
+  <!-- زر الإلغاء (رجوع للخلف) -->
+  <button type="button"
+          onclick="window.history.back()"
+          class="btn btn-sm btn-secondary">
+    إلغاء
+  </button>
+
+  <!-- زر الحفظ -->
   <button type="submit" class="btn btn-sm btn-primary">
     حفظ العملية
   </button>
+
 </div>
 
 </div>
