@@ -58,6 +58,61 @@
       color: #cbd5f5;
     }
   </style>
+
+  <script>
+    function selectPartner(id, name, phone) {
+      document.getElementById('partner_id').value = id;
+      document.querySelector('[name="Supplier_Name"]').value = name;
+      document.querySelector('[name="Supplier_Phone"]').value = phone ?? '';
+
+      const form = document.getElementById('partnerForm');
+      form.action = `{{ url('partners') }}/${id}`;
+
+      if (!document.getElementById('_method')) {
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'PUT';
+        method.id = '_method';
+        form.appendChild(method);
+      }
+
+      document.getElementById('updateBtn').style.display = 'block';
+    }
+
+    function deletePartner() {
+      const id = document.getElementById('partner_id').value;
+
+      if (!id) {
+        alert('Please select a partner first');
+        return;
+      }
+
+      if (!confirm('Are you sure you want to delete this partner?')) return;
+
+      const form = document.getElementById('deleteForm');
+      form.action = `{{ url('partners') }}/${id}`;
+
+      form.submit();
+
+      // ⬅️ الحل
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }
+
+    document.querySelector('button[type="reset"]').addEventListener('click', () => {
+      const form = document.getElementById('partnerForm');
+      form.action = "{{ route('partners.store') }}";
+
+      const method = document.getElementById('_method');
+      if (method) method.remove();
+
+      document.getElementById('updateBtn').style.display = 'none';
+      document.getElementById('partner_id').value = '';
+    });
+  </script>
+
 </head>
 
 <body class="d-flex vh-100 overflow-hidden">
@@ -103,11 +158,12 @@
               <span class="material-symbols-outlined position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                 search
               </span>
-              <input type="number"
+              <input type="text"
                 name="search"
                 class="form-control ps-5"
                 placeholder="Enter Supplier ID or Name..."
                 required>
+
             </div>
             <button class="btn btn-primary px-4">Show</button>
           </form>
@@ -151,7 +207,9 @@
 
                 <tbody>
                   @forelse ($partners as $partner)
-                  <tr>
+                  <tr onclick="selectPartner('{{ $partner->id }}', '{{ $partner->name }}', '{{ $partner->phone }}')" style="cursor:pointer">
+
+
                     <td>S{{ str_pad($partner->id, 3, '0', STR_PAD_LEFT) }}</td>
                     <td>{{ $partner->name }}</td>
                     <td class="text-end">{{ $partner->phone ?? '-' }}</td>
@@ -182,8 +240,12 @@
             <div class="card-body">
 
 
-              <form action="{{ route('partners.store') }}" method="POST">
+              <form id="partnerForm"
+                action="{{ route('partners.store') }}"
+                method="POST">
                 @csrf
+                <input type="hidden" name="partner_id" id="partner_id">
+
                 <input type="hidden" name="type" value="{{ $type }}">
 
                 <div class="mb-3">
@@ -202,7 +264,7 @@
                     required>
                 </div>
 
-                <button class="btn btn-outline-secondary w-100 mb-3">
+                <button type="reset" class="btn btn-outline-secondary w-100 mb-3">
                   <span class="material-symbols-outlined me-1">restart_alt</span>
                   Clear to Add New
                 </button>
@@ -211,27 +273,83 @@
                   <span class="material-symbols-outlined me-1">add</span>
                   Add {{ $Add }}
                 </button>
+
+
+                <div class="d-flex gap-2 mb-3">
+
+                  <button type="submit"
+                    class="btn btn-outline-secondary w-50"
+                    id="updateBtn">
+
+                    <span class="material-symbols-outlined me-1">edit</span>
+                    Update
+                  </button>
+
+                  <button class="btn btn-outline-danger w-50"
+                    onclick="deletePartner()">
+                    <span class="material-symbols-outlined me-1">delete</span>
+                    Delete
+                  </button>
+
+
+
+                </div>
               </form>
 
-              <div class="d-flex gap-2 mb-3">
-                <button class="btn btn-outline-secondary w-50">
-                  <span class="material-symbols-outlined me-1">edit</span>
-                  Edit
-                </button>
-                <button class="btn btn-outline-danger w-50">
-                  <span class="material-symbols-outlined me-1">delete</span>
-                  Delete
-                </button>
-              </div>
-
-
+              <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+              </form>
             </div>
           </div>
-        </div>
 
-      </div>
+        </div>
     </main>
   </div>
+
+  <!-- popup -->
+
+  @if(session('searchPartners'))
+<div class="modal fade show" id="searchModal" tabindex="-1" style="display:block; background:rgba(0,0,0,.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Search Results</h5>
+        <a href="{{ url()->current() }}" class="btn-close"></a>
+      </div>
+
+      <div class="modal-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th class="text-end">Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach(session('searchPartners') as $partner)
+            <tr onclick="selectPartner('{{ $partner->id }}','{{ $partner->name }}','{{ $partner->phone }}')"
+                style="cursor:pointer">
+              <td>S{{ str_pad($partner->id, 3, '0', STR_PAD_LEFT) }}</td>
+              <td>{{ $partner->name }}</td>
+              <td class="text-end">{{ $partner->phone ?? '-' }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <a href="{{ url()->current() }}" class="btn btn-secondary">Close</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+@endif
+
 </body>
 
 </html>

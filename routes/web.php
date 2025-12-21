@@ -10,25 +10,28 @@ use Illuminate\Support\Facades\Auth;
 
 
 
-
 Route::prefix('partners')->group(function () {
 
-    // Suppliers Page
     Route::get('/suppliers', [PartnerController::class, 'suppliers'])
         ->name('partners.suppliers');
 
-    // Customers Page
     Route::get('/customers', [PartnerController::class, 'customers'])
         ->name('partners.customers');
 
-    // Store
+    Route::get('/search', [PartnerController::class, 'search'])
+        ->name('partners.search');
+
+    // CRUD الصحيح
     Route::post('/', [PartnerController::class, 'store'])
         ->name('partners.store');
 
-    // Search by ID
-    Route::get('/search', [PartnerController::class, 'search'])
-        ->name('partners.search');
+    Route::put('/{id}', [PartnerController::class, 'update'])
+        ->name('partners.update');
+
+    Route::delete('/{id}', [PartnerController::class, 'destroy'])
+        ->name('partners.destroy');
 });
+
 
 // تسجيل الخروج 
 Route::post('/logout', function () {
