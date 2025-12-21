@@ -91,9 +91,9 @@
       </div>
 
       <div class="d-flex align-items-center gap-3">
-        <input class="form-control form-control-sm d-none d-md-block" style="width:220px" placeholder="Search inventory">
-        <button class="btn btn-light rounded-circle">
-          <span class="material-symbols-outlined">notifications</span>
+        <!-- <input class="form-control form-control-sm d-none d-md-block" style="width:220px" placeholder="Search inventory"> -->
+        <!-- <button class="btn btn-light rounded-circle"> -->
+          <!-- <span class="material-symbols-outlined">notifications</span> -->
         </button>
       </div>
     </header>
@@ -107,7 +107,7 @@
         <p class="text-muted" style="display: inline;">Manage your inventory essentials efficiently.</p>
 
          <div class="text-end mb-3" >
-        <a href="/" class="btn btn-outline-primary">
+        <a href="{{ route('home') }}" class="btn btn-outline-primary">
         <i class="bi bi-arrow-left"></i> Back to Home
             </a>
         </div>
@@ -167,57 +167,41 @@
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light" align="center">
               <tr>
-                <th>Action</th>
+                <th>ID</th>
+                <th>Barcode / SKU</th>
                 <th>Product Name</th>
                 <th>Category</th>
                 <th>units</th>
-                <th>Procedure</th>
               </tr>
             </thead>
             <tbody align="center">
-              <tr>
-                <td>Added “Wireless Mouse M350”</td>
-                <td>suger</td>
-                <td class="text-muted">sugres</td>
-                <td><span class="badge bg-success">50 kileo</span></td>
-                <td class="text-end">
-                <button class="btn btn-sm btn-light">
-                  <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="btn btn-sm btn-light text-danger">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
-              </td>
-              </tr>
-              <tr>
-                <td>Added “Wireless Mouse M350”</td>
-                <td>suger</td>
-                <td class="text-muted">sugres</td>
-                <td><span class="badge bg-success">50 kileo</span></td>
-                <td class="text-end">
-                <button class="btn btn-sm btn-light">
-                  <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="btn btn-sm btn-light text-danger">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
-              </td>
-              </tr>
-              <tr>
-                <td>Added “Wireless Mouse M350”</td>
-                <td>suger</td>
-                <td class="text-muted">sugres</td>
-                <td><span class="badge bg-success">50 kileo</span></td>
-                <td class="text-end">
-                <button class="btn btn-sm btn-light">
-                  <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="btn btn-sm btn-light text-danger">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
-              </td>
-              </tr>
-            </tbody>
+@forelse($products as $product)
+<tr>
+  <th>{{ $product->id }}</th>
+
+  <td>{{ $product->barcode }}</td>
+
+  <td>{{ $product->name }}</td>
+
+  <td class="text-muted">
+    {{ $product->category?->name ?? '-' }}
+  </td>
+
+  <td>
+    <span class="badge bg-success">
+      {{ $product->unit?->name ?? '-' }}
+    </span>
+  </td>
+</tr>
+@empty
+<tr>
+  <td colspan="5" class="text-muted text-center py-4">
+    No products found
+  </td>
+</tr>
+@endforelse
+</tbody>
+
           </table>
         </div>
       </div>

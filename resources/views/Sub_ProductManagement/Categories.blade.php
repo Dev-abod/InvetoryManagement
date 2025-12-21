@@ -17,18 +17,15 @@
       font-family: 'Inter', sans-serif;
       background: #f0f4f8;
     }
- .sidebar {
-  width: 280px;
-  background: linear-gradient(to bottom, #0f172a, #1e3a8a);
-  color: #cbd5f5;
-}
-
-
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(to bottom, #0f172a, #1e3a8a);
+      color: #cbd5f5;
+    }
     .sidebar a {
       color: #94a3b8;
       text-decoration: none;
     }
-
     .sidebar a.active,
     .sidebar a:hover {
       background: #ffffff;
@@ -52,10 +49,8 @@
 
 <body class="d-flex vh-100 overflow-hidden">
 
-  <!-- Sidebar -->
- <!-- {{-- استدعاء السايدبار --}} -->
-    @include('layouts.sidebar')
-
+{{-- Sidebar --}}
+@include('layouts.sidebar')
 
 <!-- Main -->
 <div class="flex-grow-1 d-flex flex-column">
@@ -63,7 +58,7 @@
   <!-- Header -->
   <header class="bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
     <div class="text-secondary small">
-      Home / Product Management / <strong class="text-dark">Add Categories</strong>
+      Home / Product Management / <strong class="text-dark">Add Category</strong>
     </div>
     <div class="d-flex gap-2">
       <button class="btn btn-light rounded-circle">
@@ -80,34 +75,50 @@
 
     <div class="mb-4">
       <h3 class="fw-bold">Categories</h3>
-      <p class="text-muted">Manage and organize product categories.</p>
-      <div class="text-end mb-3" >
-        <a href="/" class="btn btn-outline-primary">
-        <i class="bi bi-arrow-left"></i> Back to Product Management
-            </a>
-        </div>
+      <p class="text-muted">Manage and organize product Categories.</p>
+      <div class="text-end mb-3">
+        <a href="{{ uri('/product-management') }}" class="btn btn-outline-primary">
+          <i class="bi bi-arrow-left"></i> Back to Product Management
+        </a>
+      </div>
     </div>
 
     <!-- Form Card -->
     <div class="card mb-4">
       <div class="card-body">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-4">
-            <label class="form-label fw-semibold">Category Name</label>
-            <input type="text" class="form-control" placeholder="Electronics">
+        <form method="POST"
+          action="{{ isset($editCategory) ? route('Categories.update',$editCategory->id) : route('Categories.store') }}">
+          @csrf
+
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Category Name</label>
+              <input type="text"
+                     name="name"
+                     class="form-control"
+                     placeholder="Add Category Name"
+                     value="{{ $editCategory->name ?? '' }}"
+                     required>
+            </div>
+
+            <div class="col-md-4 d-flex gap-2">
+              <button class="btn btn-primary"
+                {{ isset($editCategory) ? 'disabled' : '' }}>
+                <span class="material-symbols-outlined me-1">add</span>
+                Add
+              </button>
+
+              <button class="btn btn-outline-secondary"
+                {{ isset($editCategory) ? '' : 'disabled' }}>
+                Save
+              </button>
+
+              <a href="{{ route('Categories') }}" class="btn btn-outline-dark">
+                Cancel
+              </a>
+            </div>
           </div>
-          <!-- <div class="col-md-4">
-            <label class="form-label fw-semibold">Description</label>
-            <input type="text" class="form-control" placeholder="Optional">
-          </div> -->
-          <div class="col-md-4 d-flex gap-2">
-            <button class="btn btn-primary">
-              <span class="material-symbols-outlined me-1">add</span>Add
-            </button>
-            <button class="btn btn-outline-secondary" disabled>Save</button>
-            <button class="btn btn-outline-dark">Cancel</button>
-          </div>
-        </div>
+        </form>
       </div>
     </div>
 
@@ -124,38 +135,46 @@
             <tr>
               <th>ID</th>
               <th>Category</th>
-              <!-- <th>Description</th>
-              <th>Products</th> -->
               <th class="text-end">Actions</th>
             </tr>
           </thead>
+
           <tbody>
+            @foreach($categories as $category)
             <tr>
-              <td class="text-muted">#1042</td>
+              <td class="text-muted">#{{ $category->id }}</td>
               <td>
                 <div class="d-flex align-items-center gap-2">
-                  <!-- <div class="icon-badge">EL</div> -->
-                  <strong>Electronics</strong>
+                  <strong>{{ $category->name }}</strong>
                 </div>
               </td>
-              <!-- <td class="text-muted">Devices & gadgets</td>
-              <td><span class="badge bg-success-subtle text-success">1240 items</span></td> -->
+
               <td class="text-end">
-                <button class="btn btn-sm btn-light">
+                <a href="{{ route('Categories',['edit'=>$category->id]) }}"
+                   class="btn btn-sm btn-light">
                   <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="btn btn-sm btn-light text-danger">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
+                </a>
+
+                <form method="POST"
+                      action="{{ route('Categories.delete',$category->id) }}"
+                      class="d-inline"
+                      onsubmit="return confirm('Are you sure you want to delete this category?')">
+                  @csrf
+                  <button class="btn btn-sm btn-light text-danger">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </form>
               </td>
             </tr>
+            @endforeach
           </tbody>
+
         </table>
       </div>
 
-      <!-- Pagination -->
-      <div class="card-footer d-flex justify-content-between align-items-center">
-        <small class="text-muted">Showing 1–4 of 24</small>
+      <!-- Pagination (شكلي فقط مثل الصفحة الأصلية) -->
+      <!-- <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">Showing 1–4 of {{ $categories->count() }}</small>
         <nav>
           <ul class="pagination pagination-sm mb-0">
             <li class="page-item disabled"><a class="page-link">Previous</a></li>
@@ -164,7 +183,8 @@
             <li class="page-item"><a class="page-link">Next</a></li>
           </ul>
         </nav>
-      </div>
+      </div> -->
+
     </div>
 
   </main>
