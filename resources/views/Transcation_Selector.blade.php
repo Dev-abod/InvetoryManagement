@@ -101,7 +101,7 @@
             </div>
             <h5 class="fw-bold">Exchange Return</h5>
             <p class="text-muted small">Process returned exchanged items.</p>
-            <a href="#" class="fw-semibold text-primary mt-auto">Start Process</a>
+            <a href="{{ route('operations.index', 'return_out') }}" class="fw-semibold text-primary mt-auto">Start Process</a>
           </div>
         </div>
 
@@ -112,7 +112,7 @@
             </div>
             <h5 class="fw-bold">Supply Return</h5>
             <p class="text-muted small">Return inventory to supplier.</p>
-            <a href="#" class="fw-semibold text-primary mt-auto">Start Process</a>
+            <a href="{{ route('operations.index', 'return_in') }}" class="fw-semibold text-primary mt-auto">Start Process</a>
           </div>
         </div>
 
@@ -123,7 +123,7 @@
             </div>
             <h5 class="fw-bold">Exchange</h5>
             <p class="text-muted small">Handle customer product exchange.</p>
-            <a href="#" class="fw-semibold text-primary mt-auto">Start Process</a>
+            <a href="{{ route('operations.index', 'out') }}" class="fw-semibold text-primary mt-auto">Start Process</a>
           </div>
         </div>
 
@@ -134,7 +134,7 @@
             </div>
             <h5 class="fw-bold">Supply</h5>
             <p class="text-muted small">Log new inventory supply.</p>
-            <a href="#" class="fw-semibold text-primary mt-auto">Start Process</a>
+            <a href="{{ route('operations.index', 'in') }}" class="fw-semibold text-primary mt-auto">Start Process</a>
           </div>
         </div>
       </div>

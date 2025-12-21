@@ -3,8 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OperationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PartnerController;
+
 
 
 
@@ -142,6 +144,40 @@ Route::get('/Categories', function () {
 })->name('Categories');
 
 
+Route::prefix('operations')
+    ->name('operations.')
+    ->middleware(['auth'])
+    ->group(function () {
+
+          Route::get('{type}', [OperationController::class, 'index'])
+            ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
+            ->name('index');
+
+        // إنشاء عملية
+        Route::get('{type}/create', [OperationController::class, 'create'])
+            ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
+            ->name('create');
+
+        // حفظ عملية
+        Route::post('{type}', [OperationController::class, 'store'])
+            ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
+            ->name('store');
+
+        // تصحيح عملية
+        Route::post('{operation}/correct', [OperationController::class, 'correct'])
+            ->whereNumber('operation')
+            ->name('correct');
+
+        // إلغاء عملية
+        Route::post('{operation}/cancel', [OperationController::class, 'cancel'])
+            ->whereNumber('operation')
+            ->name('cancel');
+
+             Route::get('items/popup', [OperationController::class, 'popupItems'])
+            ->name('items.popup');
+
+    });
+   
 
 Route::get('/SelectorParents', function () {
     return view('SelectorPartners');
