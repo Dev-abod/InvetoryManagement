@@ -37,9 +37,15 @@ Route::get('/home', function () {
 
 
 
-Route::get('/product-management', function () {
-    return view('ProductManagement');
-})->name('ProductManagement');
+// Route::get('/product-management', function () {
+//     return view('ProductManagement');
+// })->name('ProductManagement');
+
+
+use App\Http\Controllers\ProductManagementController;
+
+Route::get('/product-management', [ProductManagementController::class, 'index'])
+    ->name('ProductManagement');
 
 
 
@@ -54,9 +60,24 @@ Route::get('/TranscationSelector', function () {
 
 
 
-Route::get('/Products', function () {
-    return view('Sub_ProductManagement.Products');
-})->name('Products');
+// Route::get('/Products', function () {
+//     return view('Sub_ProductManagement.Products');
+// })->name('Products');
+
+use App\Http\Controllers\ProductController;
+
+Route::get('/Products', [ProductController::class, 'index'])
+    ->name('Products');
+
+Route::post('/Products', [ProductController::class, 'store'])
+    ->name('Products.store');
+
+Route::post('/Products/{id}/update', [ProductController::class, 'update'])
+    ->name('Products.update');
+
+Route::post('/Products/{id}/delete', [ProductController::class, 'destroy'])
+    ->name('Products.delete');
+
 
 
 // Route::get('/Units', function () {

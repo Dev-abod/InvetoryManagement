@@ -173,7 +173,7 @@
       </div>
 
       <!-- Pagination (شكلي فقط مثل الصفحة الأصلية) -->
-      <div class="card-footer d-flex justify-content-between align-items-center">
+      <!-- <div class="card-footer d-flex justify-content-between align-items-center">
         <small class="text-muted">Showing 1–4 of {{ $categories->count() }}</small>
         <nav>
           <ul class="pagination pagination-sm mb-0">
@@ -183,7 +183,7 @@
             <li class="page-item"><a class="page-link">Next</a></li>
           </ul>
         </nav>
-      </div>
+      </div> -->
 
     </div>
 
