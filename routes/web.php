@@ -76,6 +76,10 @@ Route::prefix('operations')
     ->middleware(['auth'])
     ->group(function () {
 
+          Route::get('{type}', [OperationController::class, 'index'])
+            ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
+            ->name('index');
+
         // إنشاء عملية
         Route::get('{type}/create', [OperationController::class, 'create'])
             ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])

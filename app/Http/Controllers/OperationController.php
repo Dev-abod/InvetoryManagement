@@ -20,6 +20,25 @@ use App\Models\StockMovement;
 
 class OperationController extends Controller
 {
+    public function index(string $type)
+{
+    // التحقق من نوع العملية
+    $this->validateOperationType($type);
+
+    // جلب العمليات حسب النوع
+    $operations = Operation::with(['partner', 'warehouse'])
+        ->where('operation_type', $type)
+        ->orderByDesc('date')
+        ->paginate(10);
+
+    return view('operations.index', [
+        'type'       => $type,
+        'pageTitle'  => $this->pageTitle($type),
+        'operations' => $operations,
+    ]);
+}
+
+
     /* =====================================================
        عرض شاشة إنشاء عملية
        ===================================================== */
