@@ -81,6 +81,11 @@
     <div class="mb-4">
       <h3 class="fw-bold">Categories</h3>
       <p class="text-muted">Manage and organize product categories.</p>
+      <div class="text-end mb-3" >
+        <a href="/" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Product Management
+            </a>
+        </div>
     </div>
 
     <!-- Form Card -->
@@ -91,10 +96,10 @@
             <label class="form-label fw-semibold">Category Name</label>
             <input type="text" class="form-control" placeholder="Electronics">
           </div>
-          <div class="col-md-4">
+          <!-- <div class="col-md-4">
             <label class="form-label fw-semibold">Description</label>
             <input type="text" class="form-control" placeholder="Optional">
-          </div>
+          </div> -->
           <div class="col-md-4 d-flex gap-2">
             <button class="btn btn-primary">
               <span class="material-symbols-outlined me-1">add</span>Add
@@ -119,8 +124,8 @@
             <tr>
               <th>ID</th>
               <th>Category</th>
-              <th>Description</th>
-              <th>Products</th>
+              <!-- <th>Description</th>
+              <th>Products</th> -->
               <th class="text-end">Actions</th>
             </tr>
           </thead>
@@ -129,12 +134,12 @@
               <td class="text-muted">#1042</td>
               <td>
                 <div class="d-flex align-items-center gap-2">
-                  <div class="icon-badge">EL</div>
+                  <!-- <div class="icon-badge">EL</div> -->
                   <strong>Electronics</strong>
                 </div>
               </td>
-              <td class="text-muted">Devices & gadgets</td>
-              <td><span class="badge bg-success-subtle text-success">1240 items</span></td>
+              <!-- <td class="text-muted">Devices & gadgets</td>
+              <td><span class="badge bg-success-subtle text-success">1240 items</span></td> -->
               <td class="text-end">
                 <button class="btn btn-sm btn-light">
                   <span class="material-symbols-outlined">edit</span>

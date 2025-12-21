@@ -72,6 +72,12 @@
     <div class="mb-4">
       <h3 class="fw-bold">Product Management</h3>
       <p class="text-muted">Create, update and manage your inventory items.</p>
+
+       <div class="text-end mb-3" >
+        <a href="/" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Product Management
+            </a>
+        </div>
     </div>
 
     <!-- Form Card -->

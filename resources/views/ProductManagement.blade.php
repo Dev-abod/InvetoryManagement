@@ -101,8 +101,17 @@
     <!-- Content -->
     <main class="p-4 overflow-auto">
       <div class="mb-4">
+      
+
         <h2 class="fw-black">Quick Product Actions</h2>
-        <p class="text-muted">Manage your inventory essentials efficiently.</p>
+        <p class="text-muted" style="display: inline;">Manage your inventory essentials efficiently.</p>
+
+         <div class="text-end mb-3" >
+        <a href="/" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
+
       </div>
 
       <!-- Action Cards -->
@@ -149,40 +158,64 @@
       </div>
 
       <!-- Recent Activity -->
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <strong>Recent Activity</strong>
-          <a href="#" class="text-primary small fw-medium">View Full Log</a>
-        </div>
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>Product List</strong>
+        <input class="form-control form-control-sm w-25" placeholder="Search...">
+      </div>
 
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+            <thead class="table-light" align="center">
               <tr>
                 <th>Action</th>
-                <th>User</th>
-                <th>Date</th>
-                <th>Status</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>units</th>
+                <th>Procedure</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody align="center">
               <tr>
                 <td>Added “Wireless Mouse M350”</td>
-                <td>Alex Morgan</td>
-                <td class="text-muted">Just now</td>
-                <td><span class="badge bg-success">Completed</span></td>
+                <td>suger</td>
+                <td class="text-muted">sugres</td>
+                <td><span class="badge bg-success">50 kileo</span></td>
+                <td class="text-end">
+                <button class="btn btn-sm btn-light">
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button class="btn btn-sm btn-light text-danger">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </td>
               </tr>
               <tr>
-                <td>Updated Stock “Dell Monitor 24”</td>
-                <td>Sarah Jenkins</td>
-                <td class="text-muted">2 hours ago</td>
-                <td><span class="badge bg-primary">Pending</span></td>
+                <td>Added “Wireless Mouse M350”</td>
+                <td>suger</td>
+                <td class="text-muted">sugres</td>
+                <td><span class="badge bg-success">50 kileo</span></td>
+                <td class="text-end">
+                <button class="btn btn-sm btn-light">
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button class="btn btn-sm btn-light text-danger">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </td>
               </tr>
               <tr>
-                <td>New Category “Electronics”</td>
-                <td>Alex Morgan</td>
-                <td class="text-muted">Yesterday</td>
-                <td><span class="badge bg-success">Completed</span></td>
+                <td>Added “Wireless Mouse M350”</td>
+                <td>suger</td>
+                <td class="text-muted">sugres</td>
+                <td><span class="badge bg-success">50 kileo</span></td>
+                <td class="text-end">
+                <button class="btn btn-sm btn-light">
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button class="btn btn-sm btn-light text-danger">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </td>
               </tr>
             </tbody>
           </table>
