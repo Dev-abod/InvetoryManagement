@@ -57,27 +57,36 @@ body{
 </div>
 
 
-  {{-- ================= Status ================= --}}
-  @php
-    $statusColor = match($operation->status) {
-      'posted'    => 'primary',
-      'corrected' => 'warning',
-      'cancelled' => 'danger',
-      default     => 'secondary',
-    };
-  @endphp
+ {{-- ================= Status ================= --}}
+@php
+  $statusColor = match($operation->status) {
+    'posted'    => 'primary',
+    'corrected' => 'warning',
+    'cancelled' => 'danger',
+    default     => 'secondary',
+  };
+@endphp
 
-  <div class="mb-3">
-    <span class="badge bg-{{ $statusColor }}">
-      {{ ucfirst($operation->status) }}
-    </span>
+<div class="mb-3">
+  <span class="badge bg-{{ $statusColor }}">
+    {{ ucfirst($operation->status) }}
+  </span>
+</div>
+
+{{-- تنبيهات حسب الحالة --}}
+@if($operation->status === 'corrected')
+  <div class="alert alert-warning">
+    ⚠ This operation was corrected before.
+    Cancelling it will void the original transaction entirely.
   </div>
+@endif
 
-  @if($operation->status === 'corrected')
-    <div class="alert alert-warning">
-      This operation has been corrected. See correction history below.
-    </div>
-  @endif
+@if($operation->status === 'cancelled')
+  <div class="alert alert-danger">
+    ❌ This operation has been cancelled and cannot be modified.
+  </div>
+@endif
+
 
   {{-- ================= Operation Info ================= --}}
   <div class="card mb-4">
