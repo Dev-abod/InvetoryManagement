@@ -134,6 +134,90 @@ class OperationController extends Controller
     ]);
 }
 
+  /* =====================================================
+       method for show correct 
+       ===================================================== */
+public function correctForm(Operation $operation)
+{
+     // يسمح فقط بتصحيح العمليات المنشورة ولم تُصحح سابقًا
+    if (
+        $operation->status !== 'posted' ||
+        $operation->corrections()->exists()
+    ) {
+        abort(403, 'This operation cannot be corrected');
+    }
+
+    $operation->load([
+        'details.item.unit',
+        'details.item.category',
+        'warehouse',
+        'partner',
+        'user'
+    ]);
+
+    return view('operations.correct', [
+        'operation' => $operation,
+        'pageTitle' => 'Correct Operation',
+    ]);
+}
+
+public function correct(Request $request, Operation $operation)
+{
+    if ($operation->status !== 'posted') {
+        abort(400, 'Operation cannot be corrected');
+    }
+
+    DB::transaction(function () use ($request, $operation) {
+
+        foreach ($operation->details as $detail) {
+
+            $newQty = (int) ($request->items[$detail->item_id] ?? $detail->quantity);
+            $oldQty = $detail->quantity;
+
+            if ($newQty === $oldQty) {
+                continue;
+            }
+
+            $difference = $newQty - $oldQty;
+            $effect = $this->stockEffect($operation->operation_type);
+
+            // إنشاء عملية تصحيح
+            $correction = Operation::create([
+                'operation_type'       => 'adjustment',
+                'date'                 => now(),
+                'number'               => 'ADJ-' . $operation->number,
+                'warehouse_id'         => $operation->warehouse_id,
+                'user_id'              => Auth::user()->id,
+                'status'               => 'posted',
+                'related_operation_id' => $operation->id,
+            ]);
+
+            OperationDetail::create([
+                'operation_id' => $correction->id,
+                'item_id'      => $detail->item_id,
+                'quantity'     => abs($difference),
+            ]);
+
+            // تحديث المخزون بالفرق فقط
+            $this->applyStockChange(
+                itemId: $detail->item_id,
+                warehouseId: $operation->warehouse_id,
+                change: $difference * $effect,
+                operation: $correction
+            );
+        }
+
+        // تغيير حالة العملية الأصلية
+        $operation->update([
+            'status' => 'corrected'
+        ]);
+    });
+
+    return redirect()
+        ->route('operations.show', $operation->id)
+        ->with('success', 'Operation corrected successfully');
+}
+
 
     /* =====================================================
        جلب الأصناف (Popup)
