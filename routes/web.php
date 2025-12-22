@@ -44,7 +44,7 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
-Route::get('/Welcome', function () {
+Route::get('/', function () {
     return view('Welcome');
 });
 

@@ -143,7 +143,7 @@
                 loading="eager">
             </div>
             <h6 class="fw-bold mb-0">Abdullah</h6>
-            <small class="text-primary">UI/UX Designer</small>
+            <small class="text-primary"></small>
           </div>
         </div>
 
@@ -158,7 +158,7 @@
                 loading="eager">
             </div>
             <h6 class="fw-bold mb-0">Ala'a</h6>
-            <small class="text-primary">Data Analizy</small>
+            <small class="text-primary"></small>
           </div>
         </div>
 
@@ -173,7 +173,7 @@
                 loading="eager">
             </div>
             <h6 class="fw-bold mb-0">Mohammed</h6>
-            <small class="text-primary">UI/UX Designer</small>
+            <small class="text-primary"></small>
           </div>
         </div>
 
@@ -189,7 +189,7 @@
                 loading="eager">
             </div>
             <h6 class="fw-bold mb-0">Ahmed</h6>
-            <small class="text-primary">Frontend Developer</small>
+            <small class="text-primary"></small>
           </div>
         </div>
 
@@ -205,7 +205,7 @@
                 loading="eager">
             </div>
             <h6 class="fw-bold mb-0">Zoher</h6>
-            <small class="text-primary">Backend Developer</small>
+            <small class="text-primary"></small>
           </div>
         </div>
 
