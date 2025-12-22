@@ -168,11 +168,11 @@ Route::prefix('operations')
             ->whereNumber('operation')
             ->name('show');
 
-        // تصحيح عملية
-        Route::post('{operation}/correct', [OperationController::class, 'correct'])
-            ->whereNumber('operation')
-            ->name('correct');
+       Route::get('operations/{operation}/correct', [OperationController::class, 'correctForm'])
+       ->name('correct.form');
 
+      Route::post('operations/{operation}/correct', [OperationController::class, 'correct'])
+      ->name('correct');
         // إلغاء عملية
         Route::post('{operation}/cancel', [OperationController::class, 'cancel'])
             ->whereNumber('operation')

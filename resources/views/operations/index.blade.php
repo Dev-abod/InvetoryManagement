@@ -141,10 +141,10 @@ body{
                 </span>
               </td>
               <td>
-                <a href="#"
-                   class="btn btn-sm btn-light">
-                  <span class="material-symbols-outlined">visibility</span>
-                </a>
+               <a href="{{ route('operations.show', $operation->id) }}"
+   class="btn btn-sm btn-light">
+  <span class="material-symbols-outlined">visibility</span>
+</a>
               </td>
             </tr>
           @empty
