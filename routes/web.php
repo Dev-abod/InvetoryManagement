@@ -163,6 +163,11 @@ Route::prefix('operations')
             ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
             ->name('store');
 
+            //  Show (تفاصيل العملية)
+        Route::get('show/{operation}', [OperationController::class, 'show'])
+            ->whereNumber('operation')
+            ->name('show');
+
         // تصحيح عملية
         Route::post('{operation}/correct', [OperationController::class, 'correct'])
             ->whereNumber('operation')
