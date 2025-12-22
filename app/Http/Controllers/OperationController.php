@@ -48,10 +48,14 @@ class OperationController extends Controller
 
         $warehouses = Warehouse::orderBy('name')->get();
 
-        $partners = Partner::where(
-            'type',
-            in_array($type, ['in', 'return_in']) ? 'supplier' : 'customer'
-        )->orderBy('name')->get();
+       // تحديد الأنواع المسموحة حسب نوع العملية
+    $partnerTypes = in_array($type, ['in', 'return_in'])
+        ? ['supplier', 'both']
+        : ['customer', 'both'];
+
+    $partners = Partner::whereIn('type', $partnerTypes)
+        ->orderBy('name')
+        ->get();
 
         return view('operations.create', [
             'type'         => $type,
@@ -115,6 +119,167 @@ class OperationController extends Controller
 
         return back()->with('success', 'تم حفظ العملية بنجاح');
     }
+
+    /* =====================================================
+       show operation
+       ===================================================== */
+       public function show(Operation $operation)
+{
+    $operation->load([
+        'partner',
+        'warehouse',
+        'details.item.unit',
+        'details.item.category',
+    ]);
+
+    return view('operations.show', [
+        'operation' => $operation,
+        'pageTitle' => 'Operation Details',
+    ]);
+}
+
+  /* =====================================================
+       method for show correct 
+       ===================================================== */
+public function correctForm(Operation $operation)
+{
+     // يسمح فقط بتصحيح العمليات المنشورة ولم تُصحح سابقًا
+    if (
+        $operation->status !== 'posted' ||
+        $operation->corrections()->exists()
+    ) {
+        abort(403, 'This operation cannot be corrected');
+    }
+
+    $operation->load([
+        'details.item.unit',
+        'details.item.category',
+        'warehouse',
+        'partner',
+        'user'
+    ]);
+
+    return view('operations.correct', [
+        'operation' => $operation,
+        'pageTitle' => 'Correct Operation',
+    ]);
+}
+
+public function correct(Request $request, Operation $operation)
+{
+    if ($operation->status !== 'posted') {
+        abort(400, 'Operation cannot be corrected');
+    }
+
+    DB::transaction(function () use ($request, $operation) {
+
+        foreach ($operation->details as $detail) {
+
+            $newQty = (int) ($request->items[$detail->item_id] ?? $detail->quantity);
+            $oldQty = $detail->quantity;
+
+            if ($newQty === $oldQty) {
+                continue;
+            }
+
+            $difference = $newQty - $oldQty;
+            $effect = $this->stockEffect($operation->operation_type);
+
+            // إنشاء عملية تصحيح
+            $correction = Operation::create([
+                'operation_type'       => 'adjustment',
+                'date'                 => now(),
+                'number'               => 'ADJ-' . $operation->number,
+                'warehouse_id'         => $operation->warehouse_id,
+                'user_id'              => Auth::user()->id,
+                'status'               => 'posted',
+                'related_operation_id' => $operation->id,
+            ]);
+
+            OperationDetail::create([
+                'operation_id' => $correction->id,
+                'item_id'      => $detail->item_id,
+                'quantity'     => abs($difference),
+            ]);
+
+            // تحديث المخزون بالفرق فقط
+            $this->applyStockChange(
+                itemId: $detail->item_id,
+                warehouseId: $operation->warehouse_id,
+                change: $difference * $effect,
+                operation: $correction
+            );
+        }
+
+        // تغيير حالة العملية الأصلية
+        $operation->update([
+            'status' => 'corrected'
+        ]);
+    });
+
+    return redirect()
+        ->route('operations.show', $operation->id)
+        ->with('success', 'Operation corrected successfully');
+}
+
+ /* =====================================================
+       method for show cancel 
+       ===================================================== */
+       public function cancel(Operation $operation)
+{
+    // يُسمح فقط بإلغاء العمليات المنشورة أو المصححة
+    if (!in_array($operation->status, ['posted', 'corrected'])) {
+        abort(400, 'Only posted or corrected operations can be cancelled');
+    }
+
+    DB::transaction(function () use ($operation) {
+
+        /*
+         |---------------------------------------------
+         | تحديد تأثير العملية الأصلية
+         |---------------------------------------------
+         | in        => +1
+         | out       => -1
+         | return_in => -1
+         | return_out=> +1
+         */
+        $effect = $this->stockEffect($operation->operation_type);
+
+        /*
+         |---------------------------------------------
+         | عكس أثر العملية على المخزون
+         |---------------------------------------------
+         | نعكس فقط العملية الأصلية
+         | ولا نلمس عمليات التصحيح إطلاقًا
+         */
+        foreach ($operation->details as $detail) {
+
+            // عكس التأثير بالكامل
+            $reverseChange = -1 * $effect * (int) $detail->quantity;
+
+            $this->applyStockChange(
+                itemId: $detail->item_id,
+                warehouseId: $operation->warehouse_id,
+                change: $reverseChange,
+                operation: $operation
+            );
+        }
+
+        /*
+         |---------------------------------------------
+         | تحديث حالة العملية
+         |---------------------------------------------
+         */
+        $operation->update([
+            'status' => 'cancelled',
+        ]);
+    });
+
+    return redirect()
+        ->route('operations.index', $operation->operation_type)
+        ->with('success', 'Operation cancelled successfully');
+}
+
 
     /* =====================================================
        جلب الأصناف (Popup)
@@ -242,8 +407,8 @@ class OperationController extends Controller
     private function partnerLabel(string $type): string
     {
         return in_array($type, ['in', 'return_in'])
-            ? 'المورد'
-            : 'العميل';
+            ? 'Supplier'
+            : 'Customer';
     }
     private function generateOperationNumber(string $type): string
 {

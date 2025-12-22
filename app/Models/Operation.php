@@ -32,6 +32,12 @@ class Operation extends Model
         return $this->belongsTo(User::class);
     }
 
+     // العملية الأصلية (إذا كانت هذه تصحيح)
+    public function originalOperation()
+    {
+        return $this->belongsTo(Operation::class, 'related_operation_id');
+    }
+
     public function corrections()
     {
         return $this->hasMany(Operation::class, 'related_operation_id');

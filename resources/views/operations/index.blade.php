@@ -9,34 +9,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
-<!-- Bootstrap 5 -->
+<!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 body{
   font-family:'Inter',sans-serif;
   background:#f6f6f8;
-  direction: ltr;
+  direction:ltr;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 280px;
-  min-width: 280px;
-  background: linear-gradient(to bottom, #0f172a, #1e3a8a);
-  color: #cbd5f5;
+  width:280px;
+  min-width:280px;
+  background:linear-gradient(to bottom,#0f172a,#1e3a8a);
+  color:#cbd5f5;
 }
 
-.sidebar a {
-  color: #cbd5f5;
-  text-decoration: none;
+.sidebar a{
+  color:#cbd5f5;
+  text-decoration:none;
 }
 
 .sidebar a.active,
-.sidebar a:hover {
-  background: #fff;
-  color: #135bec;
-  border-radius: .75rem;
+.sidebar a:hover{
+  background:#fff;
+  color:#135bec;
+  border-radius:.75rem;
 }
 
 /* Tables */
@@ -47,7 +47,7 @@ body{
 </style>
 </head>
 
-<body class="d-flex vh-100">
+<body class="d-flex vh-100 overflow-hidden">
 
 <!-- Sidebar -->
 @include('layouts.sidebar')
@@ -84,33 +84,27 @@ body{
     @endif
 
     <!-- Page Title + Actions -->
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mb-4">
-  <div>
-    <h2 class="fw-bold mb-0">{{ $pageTitle }}</h2>
-    <p class="text-muted small mb-0">
-      Manage all operations related to this type
-    </p>
-  </div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mb-4">
+      <div>
+        <h2 class="fw-bold mb-0">{{ $pageTitle }}</h2>
+        <p class="text-muted small mb-0">
+          Manage all operations related to this type
+        </p>
+      </div>
 
-  <div class="d-flex gap-2">
-    <!-- Back Button -->
-    <a href="{{ route('TranscationSelector') }}"
-       class="btn btn-outline-secondary">
-      <span class="material-symbols-outlined me-1">arrow_back</span>
-      Back
-    </a>
-
-    <!-- Create Button -->
-    <a href="{{ route('operations.create', $type) }}"
-       class="btn btn-primary">
-      <span class="material-symbols-outlined me-1">add</span>
-      Create New Operation
-    </a>
-  </div>
-</div>
+      <div class="d-flex gap-2">
+      
+        <!-- Create Button -->
+        <a href="{{ route('operations.create', $type) }}"
+           class="btn btn-primary">
+          <span class="material-symbols-outlined me-1">add</span>
+          Create New Operation
+        </a>
+      </div>
+    </div>
 
     <!-- Operations Table -->
-    <div class="card shadow-sm">
+    <div class="card shadow-sm mb-4">
       <div class="table-responsive">
         <table class="table table-hover mb-0 text-center">
           <thead class="table-light">
@@ -141,7 +135,7 @@ body{
                 </span>
               </td>
               <td>
-                <a href="#"
+                <a href="{{ route('operations.show', $operation->id) }}"
                    class="btn btn-sm btn-light">
                   <span class="material-symbols-outlined">visibility</span>
                 </a>
@@ -161,6 +155,14 @@ body{
       <div class="card-footer">
         {{ $operations->links() }}
       </div>
+    </div>
+
+    <!-- Bottom Back Button (same style as other pages) -->
+    <div class="mt-3">
+      <button onclick="window.history.back()"
+              class="btn btn-secondary">
+        Back
+      </button>
     </div>
 
   </main>

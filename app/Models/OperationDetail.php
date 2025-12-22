@@ -18,4 +18,15 @@ class OperationDetail extends Model
     {
         return $this->belongsTo(Item::class);
     }
+    // السطر الأصلي
+    public function originalDetail()
+    {
+        return $this->belongsTo(OperationDetail::class, 'related_detail_id');
+    }
+
+    // الأسطر التي تصحح هذا السطر
+    public function corrections()
+    {
+        return $this->hasMany(OperationDetail::class, 'related_detail_id');
+    }
 }

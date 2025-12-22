@@ -44,7 +44,7 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
-Route::get('/Welcome', function () {
+Route::get('/', function () {
     return view('Welcome');
 });
 
@@ -163,11 +163,16 @@ Route::prefix('operations')
             ->whereIn('type', ['in', 'out', 'return_in', 'return_out'])
             ->name('store');
 
-        // تصحيح عملية
-        Route::post('{operation}/correct', [OperationController::class, 'correct'])
+            //  Show (تفاصيل العملية)
+        Route::get('show/{operation}', [OperationController::class, 'show'])
             ->whereNumber('operation')
-            ->name('correct');
+            ->name('show');
 
+       Route::get('operations/{operation}/correct', [OperationController::class, 'correctForm'])
+       ->name('correct.form');
+
+      Route::post('operations/{operation}/correct', [OperationController::class, 'correct'])
+      ->name('correct');
         // إلغاء عملية
         Route::post('{operation}/cancel', [OperationController::class, 'cancel'])
             ->whereNumber('operation')
