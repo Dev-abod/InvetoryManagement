@@ -139,51 +139,7 @@
         </div>
       </div>
 
-      <!-- Recent Transactions -->
-      <div class="card">
-        <div class="card-header d-flex justify-content-between">
-          <strong>Recent Transactions</strong>
-          <a href="#" class="text-primary small fw-semibold">View All</a>
-        </div>
-
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th class="text-end">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>#TRX-00921</td>
-                <td><span class="badge bg-success">Supply</span></td>
-                <td class="text-muted">Oct 24, 2023</td>
-                <td>Completed</td>
-                <td class="text-end">
-                  <button class="btn btn-sm btn-light">
-                    <span class="material-symbols-outlined">more_vert</span>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>#TRX-00920</td>
-                <td><span class="badge bg-primary">Exchange</span></td>
-                <td class="text-muted">Oct 23, 2023</td>
-                <td>Pending</td>
-                <td class="text-end">
-                  <button class="btn btn-sm btn-light">
-                    <span class="material-symbols-outlined">more_vert</span>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+     
 
     </main>
   </div>
