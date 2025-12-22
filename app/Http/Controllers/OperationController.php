@@ -218,6 +218,64 @@ public function correct(Request $request, Operation $operation)
         ->with('success', 'Operation corrected successfully');
 }
 
+ /* =====================================================
+       method for show cancel 
+       ===================================================== */
+       public function cancel(Operation $operation)
+{
+    // يُسمح فقط بإلغاء العمليات المنشورة أو المصححة
+    if (!in_array($operation->status, ['posted', 'corrected'])) {
+        abort(400, 'Only posted or corrected operations can be cancelled');
+    }
+
+    DB::transaction(function () use ($operation) {
+
+        /*
+         |---------------------------------------------
+         | تحديد تأثير العملية الأصلية
+         |---------------------------------------------
+         | in        => +1
+         | out       => -1
+         | return_in => -1
+         | return_out=> +1
+         */
+        $effect = $this->stockEffect($operation->operation_type);
+
+        /*
+         |---------------------------------------------
+         | عكس أثر العملية على المخزون
+         |---------------------------------------------
+         | نعكس فقط العملية الأصلية
+         | ولا نلمس عمليات التصحيح إطلاقًا
+         */
+        foreach ($operation->details as $detail) {
+
+            // عكس التأثير بالكامل
+            $reverseChange = -1 * $effect * (int) $detail->quantity;
+
+            $this->applyStockChange(
+                itemId: $detail->item_id,
+                warehouseId: $operation->warehouse_id,
+                change: $reverseChange,
+                operation: $operation
+            );
+        }
+
+        /*
+         |---------------------------------------------
+         | تحديث حالة العملية
+         |---------------------------------------------
+         */
+        $operation->update([
+            'status' => 'cancelled',
+        ]);
+    });
+
+    return redirect()
+        ->route('operations.index', $operation->operation_type)
+        ->with('success', 'Operation cancelled successfully');
+}
+
 
     /* =====================================================
        جلب الأصناف (Popup)
