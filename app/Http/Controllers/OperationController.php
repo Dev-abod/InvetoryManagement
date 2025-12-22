@@ -48,10 +48,14 @@ class OperationController extends Controller
 
         $warehouses = Warehouse::orderBy('name')->get();
 
-        $partners = Partner::where(
-            'type',
-            in_array($type, ['in', 'return_in']) ? 'supplier' : 'customer'
-        )->orderBy('name')->get();
+       // تحديد الأنواع المسموحة حسب نوع العملية
+    $partnerTypes = in_array($type, ['in', 'return_in'])
+        ? ['supplier', 'both']
+        : ['customer', 'both'];
+
+    $partners = Partner::whereIn('type', $partnerTypes)
+        ->orderBy('name')
+        ->get();
 
         return view('operations.create', [
             'type'         => $type,
@@ -403,8 +407,8 @@ public function correct(Request $request, Operation $operation)
     private function partnerLabel(string $type): string
     {
         return in_array($type, ['in', 'return_in'])
-            ? 'المورد'
-            : 'العميل';
+            ? 'Supplier'
+            : 'Customer';
     }
     private function generateOperationNumber(string $type): string
 {

@@ -254,6 +254,175 @@ body{
 </form>
 </main>
 </div>
+<!-- ================= POPUP ITEMS ================= -->
+<div class="modal fade" id="itemSearchModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">اختيار صنف</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <table class="table table-bordered text-center">
+          <thead class="table-light">
+            <tr>
+              <th>الباركود</th>
+              <th>الصنف</th>
+              <th>الفئة</th>
+              <th>الوحدة</th>
+              <th>اختيار</th>
+            </tr>
+          </thead>
+          <tbody id="popup-items-body">
+            <tr>
+              <td colspan="5" class="text-muted text-center">
+                جاري تحميل الأصناف...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let activeRow = null;
+
+document.addEventListener('click', function (e) {
+
+  /* ---------- فتح popup ---------- */
+  if (e.target.closest('.open-item-modal')) {
+    activeRow = e.target.closest('tr');
+    loadPopupItems();
+  }
+
+  /* ---------- اختيار صنف (مع منع التكرار) ---------- */
+  if (e.target.classList.contains('select-item') && activeRow) {
+
+    const selectedItemId = e.target.dataset.id;
+
+    // منع التكرار
+    const exists = Array.from(
+      document.querySelectorAll('.item-id')
+    ).some(input =>
+      input.value === selectedItemId &&
+      input.closest('tr') !== activeRow
+    );
+
+    if (exists) {
+      alert('هذا الصنف مضاف بالفعل في العملية');
+      return;
+    }
+
+    // تعبئة الصف
+    activeRow.querySelector('.item-id').value   = selectedItemId;
+    activeRow.querySelector('.item-name').value = e.target.dataset.name;
+    activeRow.querySelector('.barcode').value   = e.target.dataset.barcode;
+    activeRow.querySelector('.category').value  = e.target.dataset.category;
+    activeRow.querySelector('.unit').value      = e.target.dataset.unit;
+
+    bootstrap.Modal
+      .getInstance(document.getElementById('itemSearchModal'))
+      .hide();
+  }
+
+  /* ---------- إضافة صف ---------- */
+  if (e.target.closest('.add-row')) {
+    const row = e.target.closest('tr');
+
+    if (
+      row.querySelector('.item-id').value === '' ||
+      row.querySelector('.quantity').value === ''
+    ) {
+      alert('اختر الصنف وأدخل الكمية أولاً');
+      return;
+    }
+
+    const newRow = row.cloneNode(true);
+    newRow.querySelectorAll('input').forEach(input => input.value = '');
+
+    document.getElementById('items-table')
+      .insertBefore(newRow, row.nextSibling);
+
+    reindex();
+  }
+
+  /* ---------- حذف صف ---------- */
+  if (e.target.closest('.delete-row')) {
+    const rows = document.querySelectorAll('#items-table tr');
+
+    if (rows.length === 1) {
+      alert('لا يمكن حذف آخر صف');
+      return;
+    }
+
+    e.target.closest('tr').remove();
+    reindex();
+  }
+});
+
+/* ---------- إعادة الترقيم ---------- */
+function reindex() {
+  document.querySelectorAll('#items-table tr').forEach((row, index) => {
+    row.querySelector('.row-index').innerText = index + 1;
+
+    row.querySelectorAll('input').forEach(input => {
+      if (input.name) {
+        input.name = input.name.replace(
+          /items\[\d+\]/,
+          'items[' + index + ']'
+        );
+      }
+    });
+  });
+}
+
+/* ---------- تحميل الأصناف ---------- */
+function loadPopupItems() {
+  fetch("{{ route('operations.items.popup') }}")
+    .then(response => response.json())
+    .then(items => {
+
+      const tbody = document.getElementById('popup-items-body');
+      tbody.innerHTML = '';
+
+      if (items.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-muted">
+              لا توجد أصناف
+            </td>
+          </tr>`;
+        return;
+      }
+
+      items.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.barcode ?? ''}</td>
+            <td>${item.name}</td>
+            <td>${item.category ?? ''}</td>
+            <td>${item.unit ?? ''}</td>
+            <td>
+              <button type="button"
+                class="btn btn-sm btn-primary select-item"
+                data-id="${item.id}"
+                data-name="${item.name}"
+                data-barcode="${item.barcode ?? ''}"
+                data-category="${item.category ?? ''}"
+                data-unit="${item.unit ?? ''}">
+                اختيار
+              </button>
+            </td>
+          </tr>`;
+      });
+    });
+}
+</script>
 
 </body>
 </html>
