@@ -117,6 +117,25 @@ class OperationController extends Controller
     }
 
     /* =====================================================
+       show operation
+       ===================================================== */
+       public function show(Operation $operation)
+{
+    $operation->load([
+        'partner',
+        'warehouse',
+        'details.item.unit',
+        'details.item.category',
+    ]);
+
+    return view('operations.show', [
+        'operation' => $operation,
+        'pageTitle' => 'Operation Details',
+    ]);
+}
+
+
+    /* =====================================================
        جلب الأصناف (Popup)
        ===================================================== */
     public function popupItems(): JsonResponse
