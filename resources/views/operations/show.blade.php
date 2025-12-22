@@ -43,6 +43,16 @@ body{
     @endif
 
   </div>
+  @if(in_array($operation->status, ['posted','corrected']))
+  <form method="POST"
+        action="{{ route('operations.cancel', $operation->id) }}"
+        onsubmit="return confirm('Are you sure you want to cancel this operation?')">
+    @csrf
+    <button type="submit" class="btn btn-danger">
+      Cancel Operation
+    </button>
+  </form>
+@endif
 
 </div>
 
