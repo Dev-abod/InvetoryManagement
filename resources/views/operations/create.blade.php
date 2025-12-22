@@ -252,6 +252,12 @@ body{
 
 </div>
 </form>
+<div class="mt-4">
+  <button onclick="window.history.back()"
+          class="btn btn-secondary">
+    Back
+  </button>
+</div>
 </main>
 </div>
 <!-- ================= POPUP ITEMS ================= -->
