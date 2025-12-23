@@ -68,34 +68,16 @@ class ProductController extends Controller
 {
     $item = Item::findOrFail($id);
 
-    // 1️⃣ التحقق هل الصنف مستخدم في أي عملية مخزنية
+    // 🔒 التحقق الأساسي: هل الصنف مستخدم في أي عملية؟
     if ($item->operationDetails()->exists()) {
         return redirect()
             ->route('Products')
             ->withErrors([
-                'delete' => 'Cannot delete this item because it is linked to inventory operations.'
+                'delete' => 'Cannot delete this item because it has been used in inventory operations.'
             ]);
     }
 
-    // 2️⃣ التحقق هل له حركات مخزنية
-    if ($item->stockMovements()->exists()) {
-        return redirect()
-            ->route('Products')
-            ->withErrors([
-                'delete' => 'Cannot delete this item because it has stock movement history.'
-            ]);
-    }
-
-    // 3️⃣ التحقق هل له رصيد مخزني
-    if ($item->stocks()->exists()) {
-        return redirect()
-            ->route('Products')
-            ->withErrors([
-                'delete' => 'Cannot delete this item because it has current stock balance.'
-            ]);
-    }
-
-    // ✅ الحذف مسموح
+    // ✅ مسموح بالحذف
     $item->delete();
 
     return redirect()
