@@ -50,8 +50,22 @@ class CategoryController extends Controller
     }
 
     public function destroy($id)
-    {
-        Category::findOrFail($id)->delete();
-        return redirect()->route('Categories');
+{
+    $category = Category::findOrFail($id);
+
+    // التحقق هل الفئة مرتبطة بأصناف
+    if ($category->items()->exists()) {
+        return redirect()
+            ->route('Categories')
+            ->withErrors([
+                'delete' => 'Cannot delete this category because it is linked to existing items.'
+            ]);
     }
+
+    $category->delete();
+
+    return redirect()
+        ->route('Categories')
+        ->with('success', 'Category deleted successfully.');
+}
 }
