@@ -64,9 +64,42 @@ class ProductController extends Controller
         return redirect()->route('Products');
     }
 
-    public function destroy($id)
-    {
-        Item::findOrFail($id)->delete();
-        return redirect()->route('Products');
+   public function destroy($id)
+{
+    $item = Item::findOrFail($id);
+
+    // 1️⃣ التحقق هل الصنف مستخدم في أي عملية مخزنية
+    if ($item->operationDetails()->exists()) {
+        return redirect()
+            ->route('Products')
+            ->withErrors([
+                'delete' => 'Cannot delete this item because it is linked to inventory operations.'
+            ]);
     }
+
+    // 2️⃣ التحقق هل له حركات مخزنية
+    if ($item->stockMovements()->exists()) {
+        return redirect()
+            ->route('Products')
+            ->withErrors([
+                'delete' => 'Cannot delete this item because it has stock movement history.'
+            ]);
+    }
+
+    // 3️⃣ التحقق هل له رصيد مخزني
+    if ($item->stocks()->exists()) {
+        return redirect()
+            ->route('Products')
+            ->withErrors([
+                'delete' => 'Cannot delete this item because it has current stock balance.'
+            ]);
+    }
+
+    // ✅ الحذف مسموح
+    $item->delete();
+
+    return redirect()
+        ->route('Products')
+        ->with('success', 'Item deleted successfully.');
+}
 }
