@@ -98,7 +98,7 @@ body{
           <p class="text-muted small">
             View detailed reports about products and categories
           </p>
-          <a href="{{ route('reports.products') }}"
+          <a href="{{ route('reports.stock.movements') }}"
              class="fw-semibold text-primary mt-auto">
             View Report →
           </a>

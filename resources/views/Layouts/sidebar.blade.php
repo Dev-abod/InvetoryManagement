@@ -49,12 +49,13 @@
     </li>
 
     <!-- Reports -->
-    <li class="nav-item">
-      <a class="nav-link text-white" href="#">
-        <span class="material-symbols-outlined me-2">bar_chart</span>
-        Reports
-      </a>
-    </li>
+<li class="nav-item">
+  <a class="nav-link text-white {{ request()->routeIs('reports.*') ? 'active' : '' }}"
+     href="{{ route('reports.index') }}">
+    <span class="material-symbols-outlined me-2">bar_chart</span>
+    Reports
+  </a>
+</li>
   </ul>
 
  <!-- User + Logout -->
