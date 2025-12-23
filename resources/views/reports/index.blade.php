@@ -16,14 +16,40 @@
 body{
   font-family:'Inter',sans-serif;
   background:#f6f6f8;
+  direction:ltr;
 }
+
+/* Sidebar (same as system) */
+.sidebar{
+  width:280px;
+  min-width:280px;
+  background:linear-gradient(to bottom,#0f172a,#1e3a8a);
+  color:#cbd5f5;
+}
+
+.sidebar a{
+  color:#cbd5f5;
+  text-decoration:none;
+}
+
+.sidebar a.active,
+.sidebar a:hover{
+  background:#fff;
+  color:#135bec;
+  border-radius:.75rem;
+}
+
+/* Report Cards */
 .report-card{
-  transition:.3s ease;
+  transition:all .3s ease;
+  border:none;
 }
+
 .report-card:hover{
   transform:translateY(-6px);
-  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  box-shadow:0 15px 40px rgba(0,0,0,.15);
 }
+
 .icon-box{
   width:56px;
   height:56px;
@@ -37,8 +63,10 @@ body{
 
 <body class="d-flex vh-100 overflow-hidden">
 
+<!-- Sidebar -->
 @include('layouts.sidebar')
 
+<!-- Main -->
 <div class="flex-grow-1 d-flex flex-column">
 
   <!-- Header -->
@@ -52,9 +80,9 @@ body{
   <main class="p-4 overflow-auto">
 
     <div class="mb-4">
-      <h2 class="fw-bold">Reports</h2>
-      <p class="text-muted">
-        Analyze products, inventory movements, and current stock levels.
+      <h2 class="fw-bold mb-0">Reports</h2>
+      <p class="text-muted small">
+        Analyze products, inventory movements, and current stock levels
       </p>
     </div>
 
@@ -68,7 +96,7 @@ body{
           </div>
           <h5 class="fw-bold">Product Reports</h5>
           <p class="text-muted small">
-            View detailed reports about products, categories, and movements.
+            View detailed reports about products and categories
           </p>
           <a href="{{ route('reports.products') }}"
              class="fw-semibold text-primary mt-auto">
@@ -77,7 +105,7 @@ body{
         </div>
       </div>
 
-      <!-- Inventory Transactions Reports -->
+      <!-- Inventory Transactions -->
       <div class="col-md-6 col-lg-4">
         <div class="card report-card h-100 p-4">
           <div class="icon-box bg-warning bg-opacity-10 text-warning mb-3">
@@ -85,7 +113,7 @@ body{
           </div>
           <h5 class="fw-bold">Inventory Transactions</h5>
           <p class="text-muted small">
-            Analyze all inventory in, out, return, and correction operations.
+            Analyze all inventory operations and corrections
           </p>
           <a href="{{ route('reports.operations') }}"
              class="fw-semibold text-warning mt-auto">
@@ -102,7 +130,7 @@ body{
           </div>
           <h5 class="fw-bold">Stock Reports</h5>
           <p class="text-muted small">
-            Check current quantities, low stock, and zero stock items.
+            View current stock quantities and warehouse balances
           </p>
           <a href="{{ route('reports.stock') }}"
              class="fw-semibold text-success mt-auto">
@@ -116,5 +144,6 @@ body{
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

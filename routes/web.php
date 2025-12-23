@@ -207,6 +207,6 @@ Route::prefix('reports')
             ->name('operations');
 
         // تقرير المخزون الحالي (stocks)
-        Route::get('/stock', [ReportController::class, 'stock'])
+        Route::get('/stock', [ReportController::class, 'stocks'])
             ->name('stock');
     });
