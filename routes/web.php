@@ -199,8 +199,8 @@ Route::prefix('reports')
             ->name('index');
 
         // تقارير المنتجات
-        Route::get('/products', [ReportController::class, 'products'])
-            ->name('products');
+        Route::get('/stock-movements', [ReportController::class, 'stockMovements'])
+            ->name('stock.movements');
 
         // تقارير الحركات المخزنية
         Route::get('/operations', [ReportController::class, 'operations'])
