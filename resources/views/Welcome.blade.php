@@ -229,7 +229,7 @@
       </div>
 
       <p class="text-muted small mb-0">
-        © 2023 Inventory Management System. All rights reserved.
+        © 2025 Inventory Management System. All rights reserved.
       </p>
     </div>
   </footer>

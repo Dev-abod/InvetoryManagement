@@ -94,9 +94,9 @@ body{
           <div class="icon-box bg-primary bg-opacity-10 text-primary mb-3">
             <span class="material-symbols-outlined fs-3">inventory_2</span>
           </div>
-          <h5 class="fw-bold">Product Reports</h5>
+          <h5 class="fw-bold">Product Stock Movements</h5>
           <p class="text-muted small">
-            View detailed reports about products and categories
+            Analyze products and categories with detailed stock movement tracking
           </p>
           <a href="{{ route('reports.stock.movements') }}"
              class="fw-semibold text-primary mt-auto">
