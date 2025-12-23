@@ -47,9 +47,23 @@ class UnitController extends Controller
         return redirect()->route('Units');
     }
 
-    public function destroy($id)
-    {
-        Unit::findOrFail($id)->delete();
-        return redirect()->route('Units');
+   public function destroy($id)
+{
+    $unit = Unit::findOrFail($id);
+
+    // التحقق هل الوحدة مرتبطة بأصناف
+    if ($unit->items()->exists()) {
+        return redirect()
+            ->route('Units')
+            ->withErrors([
+                'delete' => 'Cannot delete this unit because it is linked to existing items.'
+            ]);
     }
+
+    $unit->delete();
+
+    return redirect()
+        ->route('Units')
+        ->with('success', 'Unit deleted successfully.');
+}
 }

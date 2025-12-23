@@ -19,6 +19,16 @@ class Item extends Model
         return $this->belongsTo(Unit::class);
     }
 
+    public function operationDetails()
+{
+    return $this->hasMany(OperationDetail::class);
+}
+
+public function stockMovements()
+{
+    return $this->hasMany(StockMovement::class);
+}
+
     public function stock()
     {
         return $this->hasMany(Stock::class);

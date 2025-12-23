@@ -64,9 +64,24 @@ class ProductController extends Controller
         return redirect()->route('Products');
     }
 
-    public function destroy($id)
-    {
-        Item::findOrFail($id)->delete();
-        return redirect()->route('Products');
+   public function destroy($id)
+{
+    $item = Item::findOrFail($id);
+
+    // 🔒 التحقق الأساسي: هل الصنف مستخدم في أي عملية؟
+    if ($item->operationDetails()->exists()) {
+        return redirect()
+            ->route('Products')
+            ->withErrors([
+                'delete' => 'Cannot delete this item because it has been used in inventory operations.'
+            ]);
     }
+
+    // ✅ مسموح بالحذف
+    $item->delete();
+
+    return redirect()
+        ->route('Products')
+        ->with('success', 'Item deleted successfully.');
+}
 }
