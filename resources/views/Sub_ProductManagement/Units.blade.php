@@ -59,6 +59,27 @@
   </div>
 </div>
 
+ {{-- ✅ رسالة خطأ الحذف --}}
+@if ($errors->has('delete'))
+  <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+    <span class="material-symbols-outlined">error</span>
+    <div>
+      {{ $errors->first('delete') }}
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
+
+{{-- ✅ رسالة نجاح --}}
+@if (session('success'))
+  <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
+    <span class="material-symbols-outlined">check_circle</span>
+    <div>
+      {{ session('success') }}
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+@endif
 <!-- Form Card -->
 <div class="card mb-4">
   <div class="card-body">
