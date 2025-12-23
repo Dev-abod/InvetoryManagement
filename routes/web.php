@@ -136,12 +136,7 @@ Route::post('/Categories/{id}/update', [CategoryController::class, 'update'])->n
 Route::post('/Categories/{id}/delete', [CategoryController::class, 'destroy'])->name('Categories.delete');
 
 
-// Route::resource('Categories', CategoryController::class);
 
-
-Route::get('/Categories', function () {
-    return view('Sub_ProductManagement.Categories');
-})->name('Categories');
 
 
 Route::prefix('operations')
