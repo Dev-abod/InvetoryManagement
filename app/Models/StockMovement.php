@@ -16,4 +16,18 @@ class StockMovement extends Model
     {
         return $this->belongsTo(Operation::class);
     }
+
+    // 🔹 الصنف
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+
+    // 🔹 المخزن
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
+
+    
 }

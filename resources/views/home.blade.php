@@ -157,9 +157,10 @@
             </div>
             <h5 class="fw-bold">Reports</h5>
             <p class="text-muted small">Generate reports and insights.</p>
-            <button class="btn btn-outline-primary rounded-pill mt-auto">
-              Open Reports
-            </button>
+            <a href="{{ route('reports.index') }}"
+              class="btn btn-outline-primary rounded-pill mt-auto">
+             View Reports
+            </a>  
           </div>
         </div>
       </div>

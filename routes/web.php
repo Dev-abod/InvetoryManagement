@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\ReportController;
+
 
 
 
@@ -188,3 +190,23 @@ Route::get('/SelectorParents', function () {
     return view('SelectorPartners');
 })->name('SelectorParents');
 
+Route::prefix('reports')
+    ->name('reports.')
+    ->group(function () {
+
+        // الصفحة الرئيسية للتقارير (الكروت)
+        Route::get('/', [ReportController::class, 'index'])
+            ->name('index');
+
+        // تقارير المنتجات
+        Route::get('/stock-movements', [ReportController::class, 'stockMovements'])
+            ->name('stock.movements');
+
+        // تقارير الحركات المخزنية
+        Route::get('/operations', [ReportController::class, 'operations'])
+            ->name('operations');
+
+        // تقرير المخزون الحالي (stocks)
+        Route::get('/stock', [ReportController::class, 'stocks'])
+            ->name('stock');
+    });
