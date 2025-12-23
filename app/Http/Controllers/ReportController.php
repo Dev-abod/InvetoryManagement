@@ -26,4 +26,16 @@ class ReportController extends Controller
             'stocksCount' => Stock::count(),
         ]);
     }
+    public function stocks()
+{
+    $stocks = Stock::with(['item', 'warehouse'])
+        ->orderBy('warehouse_id')
+        ->orderBy('item_id')
+        ->get();
+
+    return view('reports.stocks', [
+        'stocks'    => $stocks,
+        'pageTitle' => 'Current Stock Report',
+    ]);
+}
 }
