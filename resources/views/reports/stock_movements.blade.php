@@ -16,7 +16,6 @@
 body{
   font-family:'Inter',sans-serif;
   background:#f6f6f8;
-  direction:ltr;
 }
 
 /* Sidebar */
@@ -37,10 +36,80 @@ body{
   border-radius:.75rem;
 }
 
-/* Tables */
+/* Table */
 .table td,.table th{
   vertical-align:middle;
   font-size:14px;
+}
+
+/* Operation Type Colors */
+.op-in        { color:#16a34a; font-weight:600; }   /* Green */
+.op-out       { color:#dc2626; font-weight:600; }   /* Red */
+.op-return_in { color:#2563eb; font-weight:600; }   /* Blue */
+.op-return_out{ color:#ea580c; font-weight:600; }   /* Orange */
+.op-adjustment{ color:#7c3aed; font-weight:600; }   /* Purple */
+/* Operation Type Circle */
+.op-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:40px;
+  height:28px;
+  padding:0 10px;
+  border-radius:999px; /* دائرة / كبسولة */
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+}
+
+/* Colors */
+.op-in{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.op-out{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.op-return_in{
+  background:#dbeafe;
+  color:#1e40af;
+}
+
+.op-return_out{
+  background:#ffedd5;
+  color:#9a3412;
+}
+
+.op-adjustment{
+  background:#ede9fe;
+  color:#5b21b6;
+}
+
+/* Cancelled */
+.row-cancelled{
+  background-color:#fdecea !important;
+}
+.op-cancelled{
+  text-decoration:line-through;
+  color:#b42318;
+  font-weight:600;
+}
+
+/* Reversed / Corrected */
+.row-reversed{
+  background-color:#eef2ff !important;
+}
+.op-reversed{
+  color:#4338ca;
+  font-weight:600;
+}
+
+.original-op{
+  font-size:12px;
+  color:#6b7280;
 }
 </style>
 </head>
@@ -158,11 +227,12 @@ body{
           <thead class="table-light">
             <tr>
               <th>#</th>
+              <th>Operation No</th>
               <th>Date</th>
               <th>Item</th>
               <th>Category</th>
               <th>Warehouse</th>
-              <th>Operation</th>
+              <th>Type</th>
               <th>Qty Change</th>
               <th>Balance Before</th>
               <th>Balance After</th>
@@ -170,25 +240,63 @@ body{
           </thead>
           <tbody>
           @forelse($movements as $mv)
+
             @php
-              $before = $mv->balance_after - $mv->quantity_change;
+              $before      = $mv->balance_after - $mv->quantity_change;
+              $isCancelled = $mv->operation->status === 'cancelled';
+              $isReversed  = $mv->operation->originalOperation !== null;
             @endphp
-            <tr>
+
+            <tr class="
+              {{ $isCancelled ? 'row-cancelled' : '' }}
+              {{ $isReversed ? 'row-reversed' : '' }}
+            ">
               <td>{{ $loop->iteration }}</td>
+
+              <td>
+                <span class="
+                  {{ $isCancelled ? 'op-cancelled' : '' }}
+                  {{ $isReversed ? 'op-reversed' : '' }}
+                ">
+                  {{ $mv->operation->number }}
+                </span>
+
+                @if($isCancelled)
+                  <div class="badge bg-danger bg-opacity-10 text-danger mt-1">
+                    Cancelled
+                  </div>
+                @endif
+
+                @if($isReversed)
+                  <div class="original-op">
+                    ↩ Reversal of:
+                    <strong>{{ $mv->operation->originalOperation->number }}</strong>
+                  </div>
+                @endif
+              </td>
+
               <td>{{ $mv->created_at->format('Y-m-d') }}</td>
               <td>{{ $mv->item->name }}</td>
               <td>{{ $mv->item->category->name ?? '-' }}</td>
               <td>{{ $mv->warehouse->name }}</td>
-              <td>{{ strtoupper($mv->operation->operation_type) }}</td>
+             <td>
+  <span class="op-badge op-{{ $mv->operation->operation_type }}">
+    {{ str_replace('_',' ',$mv->operation->operation_type) }}
+  </span>
+</td>
+
+
               <td class="{{ $mv->quantity_change >= 0 ? 'text-success' : 'text-danger' }}">
                 {{ $mv->quantity_change > 0 ? '+' : '' }}{{ $mv->quantity_change }}
               </td>
+
               <td>{{ $before }}</td>
               <td class="fw-semibold">{{ $mv->balance_after }}</td>
             </tr>
+
           @empty
             <tr>
-              <td colspan="9" class="text-muted py-4">
+              <td colspan="10" class="text-muted py-4">
                 No stock movements found
               </td>
             </tr>
@@ -204,8 +312,7 @@ body{
 
     {{-- Back --}}
     <div class="mt-3">
-      <button onclick="window.history.back()"
-              class="btn btn-secondary">
+      <button onclick="window.history.back()" class="btn btn-secondary">
         Back
       </button>
     </div>
