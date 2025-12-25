@@ -80,91 +80,89 @@ class ReportController extends Controller
         ]);
     }
 
-     public function stockMovements(Request $request)
-    {
-        // =========================
-        // Filters
-        // =========================
-        $itemId       = $request->item_id;
-        $categoryId   = $request->category_id;
-        $warehouseId  = $request->warehouse_id;
-        $fromDate     = $request->from;
-        $toDate       = $request->to;
-        $status       = $request->status; // posted / corrected / cancelled
+    public function stockMovements(Request $request)
+{
+    // =========================
+    // Filters
+    // =========================
+    $itemId       = $request->item_id;
+    $categoryId   = $request->category_id;
+    $warehouseId  = $request->warehouse_id;
+    $fromDate     = $request->from;
+    $toDate       = $request->to;
+    $status       = $request->status; // posted / corrected / cancelled
 
-        // =========================
-        // Main Query
-        // =========================
-        $movements = StockMovement::query()
-            ->with([
-                'item.category',
-                'warehouse',
-                'operation.user'
-            ])
-            ->whereHas('operation', function ($q) use ($status) {
-                // تجاهل العمليات الملغاة افتراضيًا
-                if ($status) {
-                    $q->where('status', $status);
-                } else {
-                    $q->where('status', '!=', 'cancelled');
-                }
-            });
+    // =========================
+    // Main Query
+    // =========================
+    $movements = StockMovement::query()
+        ->with([
+            'item.category',
+            'warehouse',
+            'operation.user' // ✅ لجلب رقم العملية والمستخدم
+        ])
+        ->whereHas('operation', function ($q) use ($status) {
+            // ✅ فلترة اختيارية فقط (بدون استبعاد افتراضي)
+            if ($status) {
+                $q->where('status', $status);
+            }
+        });
 
-        // =========================
-        // Item Filter
-        // =========================
-        if ($itemId) {
-            $movements->where('item_id', $itemId);
-        }
-
-        // =========================
-        // Category Filter
-        // =========================
-        if ($categoryId) {
-            $movements->whereHas('item', function ($q) use ($categoryId) {
-                $q->where('category_id', $categoryId);
-            });
-        }
-
-        // =========================
-        // Warehouse Filter
-        // =========================
-        if ($warehouseId) {
-            $movements->where('warehouse_id', $warehouseId);
-        }
-
-        // =========================
-        // Date Filters
-        // =========================
-        if ($fromDate) {
-            $movements->whereDate('created_at', '>=', $fromDate);
-        }
-
-        if ($toDate) {
-            $movements->whereDate('created_at', '<=', $toDate);
-        }
-
-        // =========================
-        // Order & Pagination
-        // =========================
-        $movements = $movements
-            ->orderBy('created_at', 'asc')
-            ->paginate(25)
-            ->withQueryString();
-
-        // =========================
-        // Data for Filters UI
-        // =========================
-        $items      = Item::orderBy('name')->get();
-        $categories = Category::orderBy('name')->get();
-        $warehouses = Warehouse::orderBy('name')->get();
-
-        return view('reports.stock_movements', [
-            'movements'  => $movements,
-            'items'      => $items,
-            'categories' => $categories,
-            'warehouses' => $warehouses,
-            'filters'    => $request->all(),
-        ]);
+    // =========================
+    // Item Filter
+    // =========================
+    if ($itemId) {
+        $movements->where('item_id', $itemId);
     }
+
+    // =========================
+    // Category Filter
+    // =========================
+    if ($categoryId) {
+        $movements->whereHas('item', function ($q) use ($categoryId) {
+            $q->where('category_id', $categoryId);
+        });
+    }
+
+    // =========================
+    // Warehouse Filter
+    // =========================
+    if ($warehouseId) {
+        $movements->where('warehouse_id', $warehouseId);
+    }
+
+    // =========================
+    // Date Filters
+    // =========================
+    if ($fromDate) {
+        $movements->whereDate('created_at', '>=', $fromDate);
+    }
+
+    if ($toDate) {
+        $movements->whereDate('created_at', '<=', $toDate);
+    }
+
+    // =========================
+    // Order & Pagination
+    // =========================
+    $movements = $movements
+        ->orderBy('created_at', 'asc')
+        ->paginate(25)
+        ->withQueryString();
+
+    // =========================
+    // Data for Filters UI
+    // =========================
+    $items      = Item::orderBy('name')->get();
+    $categories = Category::orderBy('name')->get();
+    $warehouses = Warehouse::orderBy('name')->get();
+
+    return view('reports.stock_movements', [
+        'movements'  => $movements,
+        'items'      => $items,
+        'categories' => $categories,
+        'warehouses' => $warehouses,
+        'filters'    => $request->all(),
+    ]);
+}
 }
