@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
   <!-- Bootstrap 5 -->
-<link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
 
   <style>
     body {
@@ -60,27 +60,22 @@
   </style>
 
   <script>
+    /* =========================
+   اختيار Partner من الجدول
+========================= */
     function selectPartner(id, name, phone) {
       document.getElementById('partner_id').value = id;
       document.querySelector('[name="Supplier_Name"]').value = name;
       document.querySelector('[name="Supplier_Phone"]').value = phone ?? '';
 
-      const form = document.getElementById('partnerForm');
-      form.action = `{{ url('partners') }}/${id}`;
-
-      if (!document.getElementById('_method')) {
-        const method = document.createElement('input');
-        method.type = 'hidden';
-        method.name = '_method';
-        method.value = 'PUT';
-        method.id = '_method';
-        form.appendChild(method);
-      }
-
-      document.getElementById('updateBtn').style.display = 'block';
+      document.getElementById('updateBtn').style.display = 'inline-block';
     }
 
-    function deletePartner() {
+    /* =========================
+       تحديث Partner (PUT)
+       يتحقق من الارتباط بعمليات
+    ========================= */
+    function confirmUpdate() {
       const id = document.getElementById('partner_id').value;
 
       if (!id) {
@@ -88,28 +83,91 @@
         return;
       }
 
-      if (!confirm('Are you sure you want to delete this partner?')) return;
+      if (!confirm('هل أنت متأكد من تعديل هذا الطرف؟')) return;
 
-      const form = document.getElementById('deleteForm');
-      form.action = `{{ url('partners') }}/${id}`;
+      const name = document.querySelector('[name="Supplier_Name"]').value;
+      const phone = document.querySelector('[name="Supplier_Phone"]').value;
 
-      form.submit();
+      fetch(`{{ url('partners') }}/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            Supplier_Name: name,
+            Supplier_Phone: phone
+          })
+        })
+        .then(async response => {
+          const data = await response.json();
 
-      // ⬅️ الحل
-      setTimeout(() => {
-        window.location.reload();
-      }, 300);
+          if (!response.ok) {
+            alert(data.message);
+            return;
+          }
+
+          alert(data.message);
+          location.reload();
+        })
+        .catch(() => alert('حدث خطأ غير متوقع'));
+    }
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.partner-row').forEach(row => {
+        row.addEventListener('click', function () {
+            selectPartner(
+                this.dataset.id,
+                this.dataset.name,
+                this.dataset.phone
+            );
+        });
+    });
+});
+    /* =========================
+       حذف Partner (DELETE)
+       يتحقق من الارتباط بعمليات
+    ========================= */
+    function confirmDelete() {
+      const id = document.getElementById('partner_id').value;
+
+      if (!id) {
+        alert('Please select a partner first');
+        return;
+      }
+
+      if (!confirm('هل أنت متأكد من حذف هذا الطرف؟')) return;
+
+      fetch(`{{ url('partners') }}/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+          }
+        })
+        .then(async response => {
+          const data = await response.json();
+
+          if (!response.ok) {
+            alert(data.message);
+            return;
+          }
+
+          alert(data.message);
+          location.reload();
+        })
+        .catch(() => alert('حدث خطأ غير متوقع'));
     }
 
+    /* =========================
+       Reset Form
+    ========================= */
     document.querySelector('button[type="reset"]').addEventListener('click', () => {
-      const form = document.getElementById('partnerForm');
-      form.action = "{{ route('partners.store') }}";
-
-      const method = document.getElementById('_method');
-      if (method) method.remove();
-
-      document.getElementById('updateBtn').style.display = 'none';
       document.getElementById('partner_id').value = '';
+      document.getElementById('updateBtn').style.display = 'none';
+
+      document.querySelector('[name="Supplier_Name"]').value = '';
+      document.querySelector('[name="Supplier_Phone"]').value = '';
     });
   </script>
 
@@ -207,8 +265,11 @@
 
                 <tbody>
                   @forelse ($partners as $partner)
-                  <tr onclick="selectPartner('{{ $partner->id }}', '{{ $partner->name }}', '{{ $partner->phone }}')" style="cursor:pointer">
-
+                  <tr class="partner-row"
+                    data-id="{{ $partner->id }}"
+                    data-name="{{ $partner->name }}"
+                    data-phone="{{ $partner->phone ?? '' }}"
+                    style="cursor:pointer">
 
                     <td>S{{ str_pad($partner->id, 3, '0', STR_PAD_LEFT) }}</td>
                     <td>{{ $partner->name }}</td>
@@ -223,6 +284,7 @@
                   @endforelse
                 </tbody>
               </table>
+
             </div>
 
 
@@ -236,18 +298,19 @@
             <div class="card-header fw-bold">
               Manage Details
             </div>
-
             <div class="card-body">
 
-
+              <!-- 🔹 Form: Add / Update -->
               <form id="partnerForm"
                 action="{{ route('partners.store') }}"
                 method="POST">
                 @csrf
-                <input type="hidden" name="partner_id" id="partner_id">
 
+                <!-- Hidden -->
+                <input type="hidden" name="partner_id" id="partner_id">
                 <input type="hidden" name="type" value="{{ $type }}">
 
+                <!-- Name -->
                 <div class="mb-3">
                   <label class="form-label">{{ $Name }}</label>
                   <input type="text"
@@ -256,6 +319,7 @@
                     required>
                 </div>
 
+                <!-- Phone -->
                 <div class="mb-4">
                   <label class="form-label">{{ $Phone }}</label>
                   <input type="text"
@@ -264,43 +328,49 @@
                     required>
                 </div>
 
-                <button type="reset" class="btn btn-outline-secondary w-100 mb-3">
+                <!-- Clear -->
+                <button type="reset"
+                  class="btn btn-outline-secondary w-100 mb-3">
                   <span class="material-symbols-outlined me-1">restart_alt</span>
                   Clear to Add New
                 </button>
 
-                <button type="submit" class="btn btn-primary w-100 mb-3">
+                <!-- Add -->
+                <button type="submit"
+                  class="btn btn-primary w-100 mb-3">
                   <span class="material-symbols-outlined me-1">add</span>
                   Add {{ $Add }}
                 </button>
-
-
-                <div class="d-flex gap-2 mb-3">
-
-                  <button type="submit"
-                    class="btn btn-outline-secondary w-50"
-                    id="updateBtn">
-
-                    <span class="material-symbols-outlined me-1">edit</span>
-                    Update
-                  </button>
-
-                  <button class="btn btn-outline-danger w-50"
-                    onclick="deletePartner()">
-                    <span class="material-symbols-outlined me-1">delete</span>
-                    Delete
-                  </button>
-
-
-
-                </div>
               </form>
 
-              <form id="deleteForm" method="POST">
-                @csrf
-                @method('DELETE')
-              </form>
+              <!-- 🔹 Action Buttons (Update / Delete) -->
+              <div class="d-flex gap-2 mt-2">
+
+                <!-- Update -->
+                <button type="button"
+                  id="updateBtn"
+                  onclick="confirmUpdate()"
+                  class="btn btn-outline-secondary flex-fill">
+                  Update
+                </button>
+
+
+
+
+
+
+                <!-- Delete -->
+                <button type="button"
+                  onclick="confirmDelete()"
+                  class="btn btn-outline-danger flex-fill">
+                  Delete
+                </button>
+
+
+              </div>
+
             </div>
+
           </div>
 
         </div>
@@ -310,46 +380,46 @@
   <!-- popup -->
 
   @if(session('searchPartners'))
-<div class="modal fade show" id="searchModal" tabindex="-1" style="display:block; background:rgba(0,0,0,.5)">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
+  <div class="modal fade show" id="searchModal" tabindex="-1" style="display:block; background:rgba(0,0,0,.5)">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title">Search Results</h5>
-        <a href="{{ url()->current() }}" class="btn-close"></a>
-      </div>
+        <div class="modal-header">
+          <h5 class="modal-title">Search Results</h5>
+          <a href="{{ url()->current() }}" class="btn-close"></a>
+        </div>
 
-      <div class="modal-body p-0">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th class="text-end">Phone</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach(session('searchPartners') as $partner)
-            <tr onclick="selectPartner('{{ $partner->id }}','{{ $partner->name }}','{{ $partner->phone }}')"
+        <div class="modal-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th class="text-end">Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach(session('searchPartners') as $partner)
+              <tr onclick="selectPartner('{{ $partner->id }}','{{ $partner->name }}','{{ $partner->phone }}')"
                 style="cursor:pointer">
-              <td>S{{ str_pad($partner->id, 3, '0', STR_PAD_LEFT) }}</td>
-              <td>{{ $partner->name }}</td>
-              <td class="text-end">{{ $partner->phone ?? '-' }}</td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
+                <td>S{{ str_pad($partner->id, 3, '0', STR_PAD_LEFT) }}</td>
+                <td>{{ $partner->name }}</td>
+                <td class="text-end">{{ $partner->phone ?? '-' }}</td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
 
-      <div class="modal-footer">
-        <a href="{{ url()->current() }}" class="btn btn-secondary">Close</a>
-      </div>
+        <div class="modal-footer">
+          <a href="{{ url()->current() }}" class="btn btn-secondary">Close</a>
+        </div>
 
+      </div>
     </div>
   </div>
-</div>
-@endif
-<script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  @endif
+  <script src="{{ asset('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 </body>
 

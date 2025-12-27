@@ -102,30 +102,52 @@ class PartnerController extends Controller
         return back()->with('success', 'Partner added successfully.');
     }
 
+public function update(Request $request, $id)
+{
+    $partner = Partner::findOrFail($id);
 
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'Supplier_Name'  => 'required|string|max:255',
-            'Supplier_Phone' => 'nullable|string|max:50',
-        ]);
-
-        $partner = Partner::findOrFail($id);
-
-        $partner->update([
-            'name'  => $request->Supplier_Name,
-            'phone' => $request->Supplier_Phone,
-        ]);
-
-        return redirect()->back()->with('success', 'Partner updated successfully');
+    if ($partner->operations()->exists()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'لا يمكن تعديل هذا الطرف لأنه مرتبط بعمليات أخرى'
+        ], 400);
     }
+
+    $request->validate([
+        'Supplier_Name'  => 'required|string|max:255',
+        'Supplier_Phone' => 'nullable|string|max:50',
+    ]);
+
+    $partner->update([
+        'name'  => $request->Supplier_Name,
+        'phone' => $request->Supplier_Phone,
+    ]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'تم تعديل الطرف بنجاح'
+    ]);
+}
+
+
     public function destroy($id)
     {
         $partner = Partner::findOrFail($id);
+
+        // أي نوع (customer / supplier / both)
+        if ($partner->operations()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'لا يمكن حذف هذا الطرف لأنه مرتبط بعمليات أخرى'
+            ], 400);
+        }
+
         $partner->delete();
 
-        return redirect()->back()->with('success', 'Partner deleted successfully');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'تم حذف الطرف بنجاح'
+        ]);
     }
 
 
