@@ -15,7 +15,6 @@ use App\Http\Controllers\ReportController;
 
 
 
-
 Route::prefix('partners')->group(function () {
 
     Route::get('/suppliers', [PartnerController::class, 'suppliers'])
@@ -27,16 +26,19 @@ Route::prefix('partners')->group(function () {
     Route::get('/search', [PartnerController::class, 'search'])
         ->name('partners.search');
 
-    // CRUD الصحيح
+    // Create
     Route::post('/', [PartnerController::class, 'store'])
         ->name('partners.store');
 
+    // Update ✅
     Route::put('/{id}', [PartnerController::class, 'update'])
         ->name('partners.update');
 
+    // Delete ✅
     Route::delete('/{id}', [PartnerController::class, 'destroy'])
         ->name('partners.destroy');
 });
+
 
 
 // تسجيل الخروج 
