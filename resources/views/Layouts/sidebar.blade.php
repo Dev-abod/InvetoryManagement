@@ -5,7 +5,7 @@
       <span class="material-symbols-outlined">inventory_2</span>
     </div>
     <div>
-      <h6 class="mb-0 fw-bold text-white">NEXUS INV</h6>
+      <h6 class="mb-0 fw-bold ">NEXUS INV</h6>
       <small class="text-secondary">Admin Dashboard</small>
     </div>
   </div>
@@ -14,7 +14,7 @@
 
     <!-- Home -->
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('home') ? 'active fw-semibold' : 'text-white' }}"
+      <a class="nav-link {{ request()->routeIs('home') ? 'active fw-semibold' : '' }}"
         href="{{ route('home') }}">
         <span class="material-symbols-outlined me-2">home</span>
         Home
@@ -23,7 +23,7 @@
 
     <!-- Product Management -->
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('ProductManagement') ? 'active fw-semibold' : 'text-white' }}"
+      <a class="nav-link {{ request()->routeIs('ProductManagement') ? 'active fw-semibold' : '' }}"
         href="{{ route('ProductManagement') }}">
         <span class="material-symbols-outlined me-2">inventory</span>
         Product Management
@@ -32,7 +32,7 @@
 
     <!-- Partners -->
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('SelectorParents') ? 'active fw-semibold' : 'text-white' }}"
+      <a class="nav-link {{ request()->routeIs('SelectorParents') ? 'active fw-semibold' : '' }}"
         href="{{ route('SelectorParents') }}">
         <span class="material-symbols-outlined me-2">group</span>
         Partners
@@ -41,7 +41,7 @@
 
     <!-- Transaction Management -->
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('TranscationSelector') ? 'active fw-semibold' : 'text-white' }}"
+      <a class="nav-link {{ request()->routeIs('TranscationSelector') ? 'active fw-semibold' : '' }}"
         href="{{ route('TranscationSelector') }}">
         <span class="material-symbols-outlined me-2">sync_alt</span>
         Transaction Management
@@ -50,7 +50,7 @@
 
     <!-- Reports -->
 <li class="nav-item">
-  <a class="nav-link text-white {{ request()->routeIs('reports.*') ? 'active' : '' }}"
+  <a class="nav-link  {{ request()->routeIs('reports.*') ? 'active' : '' }}"
      href="{{ route('reports.index') }}">
     <span class="material-symbols-outlined me-2">bar_chart</span>
     Reports
@@ -62,7 +62,7 @@
 <div class="border-top border-light pt-3 mt-3">
 
     <div class="mb-3">
-        <div class="fw-semibold text-white">
+        <div class="fw-semibold ">
             {{ Auth::user()->name }}
         </div>
         <small class="text-secondary">Super Admin</small>
